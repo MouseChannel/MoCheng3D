@@ -1,0 +1,22 @@
+# ninja log v5
+7	60	6997767495067756	CMakeFiles/mocheng3d.dir/CMakeFiles/3.25.2/CompilerIdCXX/CMakeCXXCompilerId.cpp.obj	7589777fc6c4b1f1
+10	1317	6997767507455623	CMakeFiles/mocheng3d.dir/main.cpp.obj	245f9ce23ce4ab33
+4	3580	6997767529764233	CMakeFiles/mocheng3d.dir/Example/main.cpp.obj	c9cd4c526aad8525
+19	3603	6997767530264491	CMakeFiles/mocheng3d.dir/src/Wrapper/CommandPool.cpp.obj	2212d369deb1c94e
+33	3644	6997767530765145	CMakeFiles/mocheng3d.dir/src/Wrapper/GLFW_Window.cpp.obj	f30da96e1a2fe6db
+2	3722	6997767531265405	CMakeFiles/mocheng3d.dir/Example/app.cpp.obj	8a82a8e59cf94080
+30	3754	6997767531552730	CMakeFiles/mocheng3d.dir/src/Wrapper/FrameBuffer.cpp.obj	47562b39a8e38f2c
+16	3787	6997767532163028	CMakeFiles/mocheng3d.dir/src/Wrapper/CommandBuffer.cpp.obj	e2fc30e961dbb1b
+22	3800	6997767532473018	CMakeFiles/mocheng3d.dir/src/Wrapper/Device.cpp.obj	cdfcd49ba550cf82
+60	3924	6997767533722997	CMakeFiles/mocheng3d.dir/src/Wrapper/RenderPass.cpp.obj	6f83c0adbf250ca5
+26	4267	6997767537210177	CMakeFiles/mocheng3d.dir/src/Wrapper/Fence.cpp.obj	adb4ad8a9893e49
+47	4421	6997767538744584	CMakeFiles/mocheng3d.dir/src/Wrapper/Instance.cpp.obj	de878b1876ac4dc4
+42	4426	6997767538794654	CMakeFiles/mocheng3d.dir/src/Wrapper/Image.cpp.obj	58dc0b6619ed540b
+54	4570	6997767540272336	CMakeFiles/mocheng3d.dir/src/Wrapper/Pipeline.cpp.obj	296ff5db38771169
+13	4929	6997767543775432	CMakeFiles/mocheng3d.dir/src/Rendering/Context.cpp.obj	92674e987a391901
+1320	5127	6997767545850061	CMakeFiles/mocheng3d.dir/src/Wrapper/Semaphore.cpp.obj	5e48aeabaa94689c
+3644	5979	6997767554362350	Example/CMakeFiles/mytest.dir/main.cpp.obj	a1fa5a5cd8d02a7d
+3580	6062	6997767555182356	CMakeFiles/mocheng3d.dir/src/Wrapper/ShaderModule.cpp.obj	3b9c3900874c528c
+3603	6224	6997767556772359	CMakeFiles/mocheng3d.dir/src/Wrapper/SwapChain.cpp.obj	9c9a19261d704da4
+6224	6279	6997767557322308	libmocheng3d.a	2e011371776c532e
+6279	6350	6997767558024609	Example/mytest.exe	72d4b78a8955ca0d

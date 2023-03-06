@@ -1,6 +1,24 @@
+/*
+ * @Author: error: error: git config user.name & please set dead value or
+ * install git && error: git config user.email & please set dead value or
+ * install git & please set dead value or install git
+ * @Date: 2023-03-03 16:49:24
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * install git && error: git config user.email & please set dead value or
+ * install git & please set dead value or install git install git && error: git
+ * config user.email & please set dead value or install git & please set dead
+ * value or install git
+ * @LastEditTime: 2023-03-04 13:17:24
+ * @FilePath: \MYP\MoCheng3D\Wrapper\SwapChain.hpp
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置
+ * 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+#include "MoCheng3D/Rendering/Context.hpp"
 #include "MoCheng3D/Wrapper/Base.hpp"
 #include "MoCheng3D/Wrapper/Component.hpp"
 #include "MoCheng3D/Wrapper/Device.hpp"
+#include "MoCheng3D/Wrapper/FrameBuffer.hpp"
+#include "MoCheng3D/Wrapper/Image.hpp"
 #include <cassert>
 #include <set>
 #include <sys/types.h>
@@ -14,7 +32,7 @@ public:
 
   struct SwapChain_Info {
     vk::Extent2D image_extent;
-    u_int32_t image_count;
+    uint32_t image_count;
     vk::SurfaceFormatKHR format;
   };
   struct SurfaceInfo {
@@ -38,9 +56,16 @@ public:
   [[nodiscard("Missing format")]] auto Get_Format() {
     return surfaceInfo.format.format;
   }
-
+  [[nodiscard("Missing Images")]] auto Get_Swapchain_Images() { return images; }
+  [[nodiscard("Missing FramgeBUffer")]] auto Get_FrameBuffers() {
+    return framebuffers;
+  }
+void Create_FrameBuffer();
 private:
   vk::SurfaceFormatKHR Query_surface_Format();
+
+  std::vector<Image::Ptr> images;
+  std::vector<Framebuffer::Ptr> framebuffers;
   vk::Extent2D
   Query_surface_Extent(const vk::SurfaceCapabilitiesKHR &capability,
                        int windowWidth, int windowHeight);

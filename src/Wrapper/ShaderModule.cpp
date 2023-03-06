@@ -1,3 +1,11 @@
+/*
+ * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @Date: 2023-03-03 16:49:27
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @LastEditTime: 2023-03-03 17:03:47
+ * @FilePath: \MYP\src\Wrapper\ShaderModule.cpp
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 #include "MoCheng3D/Wrapper/ShaderModule.hpp"
 #include "MoCheng3D/Rendering/Context.hpp"
 #include "MoCheng3D/Wrapper/Device.hpp"
@@ -10,7 +18,7 @@
 namespace MoCheng3D {
 
 std::vector<char> ShaderModule::ReadBinary(const std::string &fileName) {
-  std::ifstream file(fileName.data(),
+  std::ifstream file(fileName.c_str(),
                      std::ios::ate | std::ios::binary | std::ios::in);
 
   if (!file) {
@@ -35,7 +43,7 @@ ShaderModule::ShaderModule(const std::string path) {
   createInfo
       .setCodeSize(source.size())
 
-      .setPCode((uint32_t *)source.data());
+      .setPCode((const uint32_t *)source.data());
   auto device = Get_Context_Singleton().Get_Device();
 
   m_handle = device->Get_handle().createShaderModule(createInfo);

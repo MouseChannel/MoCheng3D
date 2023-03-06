@@ -10,10 +10,9 @@ message(STATUS "run glslangValidator to compile shaders ...")
 execute_process(COMMAND ${GLSLANG} -V ${CMAKE_SOURCE_DIR}/Shader/vert.vert -o ${CMAKE_SOURCE_DIR}/Shader/vert.spv)
 execute_process(COMMAND ${GLSLANG} -V ${CMAKE_SOURCE_DIR}/Shader/frag.frag -o ${CMAKE_SOURCE_DIR}/Shader/frag.spv)
 message(STATUS "compile shader OK")
-
-find_package(Vulkan REQUIRED)
-find_package(glfw3 REQUIRED)
-
+ 
+include(cmake/FindGLFW.cmake)
+include(cmake/FindVulkan.cmake)
 
 
 file(GLOB_RECURSE SRC src   *.cpp  )

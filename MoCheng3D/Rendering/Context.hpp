@@ -1,3 +1,4 @@
+
 #pragma once
 
 // #include "MoCheng3D/Rendering/GLFW_Window.hpp"
@@ -5,10 +6,10 @@
 // #include "MoCheng3D/Wrapper/Instance.hpp"
 
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <vector>
 #include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_handles.hpp>
 
 namespace MoCheng3D {
 class Window;
@@ -22,6 +23,9 @@ class RenderPass;
 class Framebuffer;
 class CommandPool;
 class CommandBuffer;
+class Semaphore;
+class Fence;
+
 class Context {
 
 public:
@@ -58,12 +62,16 @@ public:
   std::shared_ptr<ShaderModule> frag_shader;
   std::shared_ptr<Pipeline> pipeline;
   std::shared_ptr<RenderPass> render_pass;
+  std::vector<std::shared_ptr<Image>> swapchain_images;
   std::vector<std::shared_ptr<Framebuffer>> frame_buffers;
+
   std::shared_ptr<CommandPool> command_pool;
   std::shared_ptr<CommandBuffer> command_buffer;
-  vk::Semaphore render_semaphore;
-  vk::Semaphore present_semaphore;
-  vk::Fence fence;
+  std::vector<std::shared_ptr<Semaphore>> render_semaphore;
+  std::vector<std::shared_ptr<Semaphore>> present_semaphore;
+
+  std::vector<std::shared_ptr<Fence>> fences;
+  uint32_t current_frame = 0;
 
 private:
 };

@@ -84,7 +84,7 @@ void Pipeline::Add_Shader_Modules(vk::ShaderModule module,
 void Pipeline::Make_Resterization() {
   rasterization_info.setCullMode(vk::CullModeFlagBits::eBack)
       .setFrontFace(vk::FrontFace::eClockwise)
-      .setDepthClampEnable(false)
+
       .setLineWidth(1)
       .setPolygonMode(vk::PolygonMode::eFill)
       .setRasterizerDiscardEnable(false);

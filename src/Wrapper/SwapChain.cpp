@@ -57,13 +57,16 @@ void SwapChain::Query_info() {
                         .Get_Device()
                         ->Get_Physical_device()
                         .getSurfaceCapabilitiesKHR(surface);
+  //   capability.maxImageCount = 3;
+
+  //   capability.minImageCount = 1;
 
   surfaceInfo.count =
 
       std::clamp(capability.minImageCount + 1, capability.minImageCount,
                  capability.maxImageCount);
   // todo
-  surfaceInfo.count = 3;
+  // surfaceInfo.count = 3;
   surfaceInfo.transform = capability.currentTransform;
   surfaceInfo.extent = Query_surface_Extent(capability, 800, 800);
 }
@@ -95,5 +98,16 @@ vk::SurfaceFormatKHR SwapChain::Query_surface_Format() {
     }
   }
   return available_format[0];
+}
+
+void SwapChain::Create_FrameBuffer() {
+  auto swapchain_image = Get_Swapchian_Images();
+  
+ 
+  for (auto &i : swapchain_image) {
+
+    // swapchain_images.emplace_back(Image::Create(i, swapchain->Get_Format()));
+    // frame_buffers.emplace_back(Framebuffer::Create(swapchain_images.back()));
+  }
 }
 } // namespace MoCheng3D

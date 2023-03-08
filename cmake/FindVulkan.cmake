@@ -4,9 +4,9 @@ IF(WIN32)
 
     set(VULKAN_INCLUDE_DIR "${VULKAN_DIR}/Include")
     set(VULKAN_LIB_LOCATION "${VULKAN_DIR}/Lib/vulkan-1.lib")
-    add_library(Vulkan::Vulkan STATIC IMPORTED GLOBAL)
+    add_library(Vulkan STATIC IMPORTED GLOBAL)
     set_target_properties(
-        Vulkan::Vulkan
+        Vulkan
         PROPERTIES
         IMPORTED_LOCATION ${VULKAN_LIB_LOCATION}
         INTERFACE_INCLUDE_DIRECTORIES ${VULKAN_INCLUDE_DIR}
@@ -14,5 +14,5 @@ IF(WIN32)
     MESSAGE(STATUS "link Windows Vulkan down👌")
 ELSEIF(UNIX)
     MESSAGE(STATUS "Find linux Vulkan........")
-    find_package(Vulkan::Vulkan REQUIRED)
+    find_package(Vulkan REQUIRED)
 ENDIF()

@@ -1,6 +1,6 @@
 IF(WIN32)
     MESSAGE(STATUS "Find Windows glfw😊")
-    set(GLFW_DIR "D:/Some_software/glfw" CACHE PATH "123")
+    set(GLFW_DIR "D:/Some_software/glfw")
     set(GLWF_INCLUDE_DIR "${GLFW_DIR}/include")
     set(GLFW_LIB_LOCATION "${GLFW_DIR}/build/src/libglfw3.a")
     add_library(glfw STATIC IMPORTED GLOBAL)

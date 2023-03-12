@@ -19,7 +19,7 @@ DescriptorSet::DescriptorSet(DescriptorPool::Ptr descriptorPool, vk::DescriptorS
 DescriptorSet::~DescriptorSet()
 {
 }
-void DescriptorSet::Update(Buffer::Ptr buffer)
+void DescriptorSet::Update(Buffer::Ptr buffer, uint32_t binding_index)
 {
     for (int i = 0; i < m_handle.size(); i++)
     {
@@ -34,7 +34,7 @@ void DescriptorSet::Update(Buffer::Ptr buffer)
         vk::WriteDescriptorSet writer;
         writer.setDescriptorType(vk::DescriptorType::eUniformBuffer)
             .setBufferInfo(buffer_info)
-            .setDstBinding(0)
+            .setDstBinding(binding_index)
             .setDstSet(set)
             .setDstArrayElement(0)
             .setDescriptorCount(1);

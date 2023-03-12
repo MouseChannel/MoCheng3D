@@ -5,14 +5,14 @@
 // #include "MoCheng3D/Wrapper/Device.hpp"
 // #include "MoCheng3D/Wrapper/Instance.hpp"
 
+#include "MoCheng3D/Math/math.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <vector>
 #include <vulkan/vulkan.hpp>
 
-namespace MoCheng3D
-{
+namespace MoCheng3D {
 class Window;
 class Instance;
 class Device;
@@ -30,36 +30,35 @@ class Fence;
 class Buffer;
 class DescriptorPool;
 class DescriptorSet;
-class Context
-{
+class Context {
 
-  public:
+public:
     static std::unique_ptr<Context> _instance;
     static void Init();
     static void Quit();
 
-    static Context &Get_Singleton();
-    [[nodiscard("Missing Instance")]] auto &Get_Instance()
+    static Context& Get_Singleton();
+    [[nodiscard("Missing Instance")]] auto& Get_Instance()
     {
         return instance;
     }
-    [[nodiscard("missing Device")]] auto &Get_Device()
+    [[nodiscard("missing Device")]] auto& Get_Device()
     {
         return device;
     }
-    [[nodiscard("missing window")]] auto &Get_Window()
+    [[nodiscard("missing window")]] auto& Get_Window()
     {
         return window;
     }
-    [[nodiscard("Missing SwapChain")]] auto &Get_SwapChain()
+    [[nodiscard("Missing SwapChain")]] auto& Get_SwapChain()
     {
         return swapchain;
     }
-    [[nodiscard("Missing RenderPass")]] auto &Get_RenderPass()
+    [[nodiscard("Missing RenderPass")]] auto& Get_RenderPass()
     {
         return render_pass;
     }
-    [[nodiscard("Missing CommandPool")]] auto &Get_CommandPool()
+    [[nodiscard("Missing CommandPool")]] auto& Get_CommandPool()
     {
         return command_pool;
     }
@@ -93,15 +92,24 @@ class Context
     std::vector<std::shared_ptr<Fence>> fences;
     uint32_t current_frame = 0;
     std::shared_ptr<Buffer> vertex_buffer;
-    std::shared_ptr<Buffer> uniform_buffer;
+    std::shared_ptr<Buffer> indice_buffer;
+    std::shared_ptr<Buffer> uniform_mvp_buffer;
+    std::shared_ptr<Buffer> uniform_color_buffer;
+
     std::shared_ptr<DescriptorPool> descriptorPool;
     vk::DescriptorSetLayout descriptor_layout;
     std::shared_ptr<DescriptorSet> descriptorset;
+    Rect drawed_rect { .pos { 455, 455 }, .size { 100, 100 } };
 
-  private:
-    vk::PipelineLayout CreatePipelineLayout();
+private:
+    void CreatePipelineLayout();
     void CreateVertexBuffer();
     void CreateUniformBuffer();
     void CreateDescriptorSet();
+    void CreateMVPMatrix();
+    vk::PipelineLayout pipeline_layout;
+    std::array<Mat4, 3> project_view_data;
+    Mat4 m_project_matrix;
+    Mat4 m_view_matrix;
 };
 } // namespace MoCheng3D

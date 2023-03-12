@@ -11,7 +11,7 @@ class DescriptorSet : public Component<std::vector<vk::DescriptorSet>, Descripto
   public:
     DescriptorSet(std::shared_ptr<DescriptorPool> descriptorPool, vk::DescriptorSetLayout setLayouts);
     ~DescriptorSet();
-    void Update(std::shared_ptr<Buffer> buffer);
+    void Update(std::shared_ptr<Buffer> buffer, uint32_t binding_index  );
 
   private:
 };

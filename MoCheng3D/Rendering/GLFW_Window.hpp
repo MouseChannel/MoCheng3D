@@ -22,6 +22,7 @@ public:
   Window(int width, int height);
   ~Window();
   void PollEvents();
+  std::vector<int> WindowUpdate();
   bool Should_Close();
   void CreateWindowSurface();
   [[nodiscard]] auto GetSurface() { return surface; }

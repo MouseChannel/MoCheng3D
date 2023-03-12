@@ -11,14 +11,18 @@ struct Color final
 struct Uniform final
 {
     Color color;
-    static vk::DescriptorSetLayoutBinding GetBinding()
+    static vk::DescriptorSetLayoutBinding GetBinding(uint32_t binding_index, vk::ShaderStageFlags shader_stage)
     {
         vk::DescriptorSetLayoutBinding binding;
-        binding.setBinding(0)
+        binding.setBinding(binding_index)
             .setDescriptorType(vk::DescriptorType::eUniformBuffer)
-            .setStageFlags(vk::ShaderStageFlagBits::eFragment)
+            .setStageFlags(shader_stage)
             .setDescriptorCount(1);
         return binding;
+    }
+    static vk::DescriptorSetLayoutBinding GetDefaultBinding()
+    {
+        return GetBinding(0, vk::ShaderStageFlagBits::eFragment);
     }
 };
 

@@ -1,6 +1,6 @@
 #include "MoCheng3D/Rendering/Texture.hpp"
 #define STB_IMAGE_IMPLEMENTATION
-#include "MoCheng3D/Tool/stb_image.h"
+#include "MoCheng3D/Tool/stb_image.hpp"
 #include "MoCheng3D/Wrapper/Buffer.hpp"
 #include "MoCheng3D/Wrapper/Image.hpp"
 

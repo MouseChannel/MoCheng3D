@@ -6,8 +6,7 @@
 #include <vulkan/vulkan_enums.hpp>
 #include <vulkan/vulkan_handles.hpp>
 #include <vulkan/vulkan_structs.hpp>
-namespace MoCheng3D
-{
+namespace MoCheng3D {
 Pipeline::Pipeline()
 {
 }
@@ -45,11 +44,10 @@ void Pipeline::Make_Layout(vk::PipelineLayout pipeline_layout)
     //                .createPipelineLayout (createInfo);
     layout = pipeline_layout;
 }
-void Pipeline::Make_VertexInput(vk::ArrayProxyNoTemporaries<const vk::VertexInputBindingDescription> const &bind,
-                                vk::ArrayProxyNoTemporaries<const vk::VertexInputAttributeDescription> const &attr)
+void Pipeline::Make_VertexInput(vk::ArrayProxyNoTemporaries<const vk::VertexInputBindingDescription> const& bind,
+    vk::ArrayProxyNoTemporaries<const vk::VertexInputAttributeDescription> const& attr)
 {
     input_state.setVertexAttributeDescriptions(attr).setVertexBindingDescriptions(bind);
-    std::cout << "i" << std::endl;
 }
 void Pipeline::Make_VertexAssembly()
 {
@@ -61,7 +59,7 @@ void Pipeline::Make_viewPort()
     auto extent2D = Get_Context_Singleton().Get_SwapChain()->Get_Extent2D();
     viewport.setX(0).setY(0).setHeight(extent2D.height).setWidth(extent2D.width).setMinDepth(0).setMaxDepth(1);
 
-    scissor.setExtent(extent2D).setOffset(vk::Offset2D{0, 0});
+    scissor.setExtent(extent2D).setOffset(vk::Offset2D { 0, 0 });
     viewportInfo.setViewports(viewport).setScissors(scissor).setViewportCount(1).setScissorCount(1);
 }
 void Pipeline::Add_Shader_Modules(vk::ShaderModule module, vk::ShaderStageFlagBits stage)
@@ -89,8 +87,7 @@ void Pipeline::Make_attach()
 {
     vk::PipelineColorBlendAttachmentState attach;
     attach.setBlendEnable(true)
-        .setColorWriteMask(vk::ColorComponentFlagBits::eA | vk::ColorComponentFlagBits::eB |
-                           vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eR)
+        .setColorWriteMask(vk::ColorComponentFlagBits::eA | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eR)
         .setSrcColorBlendFactor(vk::BlendFactor::eOne)
         .setDstAlphaBlendFactor(vk::BlendFactor::eOneMinusSrcAlpha)
         .setColorBlendOp(vk::BlendOp::eAdd)

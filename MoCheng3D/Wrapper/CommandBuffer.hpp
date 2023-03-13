@@ -10,7 +10,7 @@ class CommandBuffer : public Component<vk::CommandBuffer, CommandBuffer> {
 public:
     CommandBuffer();
     ~CommandBuffer();
-    void Begin(vk::CommandBufferBeginInfo begin);
+    void Begin(vk::CommandBufferUsageFlags begin_flags);
     void End();
     void Reset();
     void BeginRenderPass(vk::RenderPassBeginInfo renderPassInfo,

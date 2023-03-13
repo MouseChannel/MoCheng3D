@@ -1,24 +1,32 @@
 #pragma once
+#include "MoCheng3D/Math/math.hpp"
 #include <vulkan/vulkan.hpp>
 
-namespace MoCheng3D
-{
-struct Vertex final
-{
+namespace MoCheng3D {
+struct Vertex final {
 
-    float x, y;
+    Vec2 position;
+    Vec2 texcoord;
+    // float x, y;
 
-    static vk::VertexInputAttributeDescription Get_Attr()
+    static std::vector<vk::VertexInputAttributeDescription> Get_Attr()
     {
-        vk::VertexInputAttributeDescription attr;
-        attr.setBinding(0)
-
+        std::vector<vk::VertexInputAttributeDescription> descriptions(2);
+        descriptions[0]
+            .setBinding(0)
             .setFormat(vk::Format::eR32G32Sfloat)
             .setLocation(0)
             .setOffset(0);
-        return attr;
+        descriptions[1]
+            .setBinding(0)
+            .setFormat(vk::Format::eR32G32Sfloat)
+            .setLocation(1)
+            .setOffset(offsetof(Vertex, texcoord));
+        vk::VertexInputAttributeDescription attr;
+      
+        return descriptions;
     }
-    static vk::VertexInputBindingDescription Get_Binding()
+    static std::vector<vk::VertexInputBindingDescription> Get_Binding()
     {
         vk::VertexInputBindingDescription binding;
         binding
@@ -26,7 +34,7 @@ struct Vertex final
 
             .setInputRate(vk::VertexInputRate::eVertex)
             .setStride(sizeof(Vertex));
-        return binding;
+        return { binding };
     }
 };
 

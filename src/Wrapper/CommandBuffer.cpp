@@ -18,9 +18,11 @@ CommandBuffer::CommandBuffer()
     m_handle = Get_Context_Singleton().Get_Device()->Get_handle().allocateCommandBuffers(
         allocate_info)[0];
 }
-void CommandBuffer::Begin(vk::CommandBufferBeginInfo begin)
+void CommandBuffer::Begin(vk::CommandBufferUsageFlags begin_flags)
 {
-    m_handle.begin(begin);
+    vk::CommandBufferBeginInfo begin_info;
+    begin_info.setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+    m_handle.begin(begin_info);
 }
 void CommandBuffer::End() { m_handle.end(); }
 void CommandBuffer::Reset() { m_handle.reset(); }

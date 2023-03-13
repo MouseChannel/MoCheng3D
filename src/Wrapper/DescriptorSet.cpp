@@ -2,9 +2,9 @@
 #include "MoCheng3D/Wrapper/Buffer.hpp"
 #include "MoCheng3D/Wrapper/DescriptorPool.hpp"
 #include "MoCheng3D/Wrapper/Device.hpp"
+#include "MoCheng3D/Wrapper/Sampler.hpp"
 #include "MoCheng3D/Wrapper/SwapChain.hpp"
-namespace MoCheng3D
-{
+namespace MoCheng3D {
 DescriptorSet::DescriptorSet(DescriptorPool::Ptr descriptorPool, vk::DescriptorSetLayout setLayouts)
 {
     vk::DescriptorSetAllocateInfo allocate_info;
@@ -19,10 +19,9 @@ DescriptorSet::DescriptorSet(DescriptorPool::Ptr descriptorPool, vk::DescriptorS
 DescriptorSet::~DescriptorSet()
 {
 }
-void DescriptorSet::Update(Buffer::Ptr buffer, uint32_t binding_index)
+void DescriptorSet::Update(Buffer::Ptr buffer, uint32_t binding_index, vk::DescriptorType descriptor_type)
 {
-    for (int i = 0; i < m_handle.size(); i++)
-    {
+    for (int i = 0; i < m_handle.size(); i++) {
 
         auto set = m_handle[i];
         vk::DescriptorBufferInfo buffer_info;
@@ -32,8 +31,35 @@ void DescriptorSet::Update(Buffer::Ptr buffer, uint32_t binding_index)
             .setRange(buffer->GetSize())
             .setOffset(0);
         vk::WriteDescriptorSet writer;
-        writer.setDescriptorType(vk::DescriptorType::eUniformBuffer)
+
+        writer.setDescriptorType(descriptor_type)
             .setBufferInfo(buffer_info)
+            .setDstBinding(binding_index)
+            .setDstSet(set)
+            .setDstArrayElement(0)
+            .setDescriptorCount(1);
+        Get_Context_Singleton().Get_Device()->Get_handle().updateDescriptorSets(writer, {});
+    }
+}
+void DescriptorSet::Update(std::shared_ptr<Image> image, uint32_t binding_index, vk::DescriptorType descriptor_type)
+{
+    for (int i = 0; i < m_handle.size(); i++) {
+
+        auto set = m_handle[i];
+
+        vk::WriteDescriptorSet writer;
+
+        // std::unique_ptr<Sampler> sampler { new Sampler };
+        auto sampler = Get_Context_Singleton().Get_Sampler();
+        vk::DescriptorImageInfo imageInfo;
+
+        imageInfo.setImageLayout(vk::ImageLayout::eShaderReadOnlyOptimal)
+            .setImageView(image->Get_Image_View())
+            .setSampler(sampler->Get_handle());
+        writer.setImageInfo(imageInfo);
+
+        writer.setDescriptorType(descriptor_type)
+
             .setDstBinding(binding_index)
             .setDstSet(set)
             .setDstArrayElement(0)

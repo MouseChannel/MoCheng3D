@@ -30,6 +30,8 @@ class Fence;
 class Buffer;
 class DescriptorPool;
 class DescriptorSet;
+class Texture;
+class Sampler;
 class Context {
 
 public:
@@ -62,6 +64,7 @@ public:
     {
         return command_pool;
     }
+    [[nodiscard("missing Sampler")]] auto& Get_Sampler() { return sampler; }
 
     Context() = default;
     void Init_Value();
@@ -96,9 +99,14 @@ public:
     std::shared_ptr<Buffer> uniform_mvp_buffer;
     std::shared_ptr<Buffer> uniform_color_buffer;
 
-    std::shared_ptr<DescriptorPool> descriptorPool;
+    std::shared_ptr<DescriptorPool> descriptorPool_uniform;
+
+    std::shared_ptr<DescriptorPool> descriptorPool_texture;
     vk::DescriptorSetLayout descriptor_layout;
-    std::shared_ptr<DescriptorSet> descriptorset;
+    std::shared_ptr<DescriptorSet> descriptorset_uniform;
+    std::shared_ptr<DescriptorSet> descriptorset_texture;
+    std::shared_ptr<Sampler> sampler;
+
     Rect drawed_rect { .pos { 455, 455 }, .size { 100, 100 } };
 
 private:
@@ -111,5 +119,6 @@ private:
     std::array<Mat4, 3> project_view_data;
     Mat4 m_project_matrix;
     Mat4 m_view_matrix;
+    std::shared_ptr<Texture> texture;
 };
 } // namespace MoCheng3D

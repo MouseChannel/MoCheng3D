@@ -29,20 +29,22 @@ bool Window::Should_Close() { return glfwWindowShouldClose(window); }
 std::vector<int> Window::WindowUpdate()
 {
     std::vector<int> res(4);
+    int stride = 1;
+    int weight = 2;
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        res[0] = -1;
+        res[0] = stride * weight * -1;
     }
 
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        res[1] = 1;
+        res[1] = stride * weight;
     }
 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        res[2] = (-1);
+        res[2] = stride * weight * -1;
     }
 
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        res[3] = (1);
+        res[3] = stride * weight;
     }
     return res;
 }

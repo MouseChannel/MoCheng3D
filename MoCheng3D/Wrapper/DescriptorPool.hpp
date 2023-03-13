@@ -2,15 +2,13 @@
 #include "MoCheng3D/Wrapper/Base.hpp"
 #include "MoCheng3D/Wrapper/Component.hpp"
 #include <vulkan/vulkan_handles.hpp>
-namespace MoCheng3D
-{
+namespace MoCheng3D {
 class DescriptorSet;
-class DescriptorPool : public Component<vk::DescriptorPool, DescriptorPool>
-{
-  public:
-    DescriptorPool();
+class DescriptorPool : public Component<vk::DescriptorPool, DescriptorPool> {
+public:
+    DescriptorPool(std::vector<vk::DescriptorType> types, std::vector<uint32_t> size);
     ~DescriptorPool();
     // std::shared_ptr<DescriptorSet> CreateDescriptorSet();
-  private:
+private:
 };
 } // namespace MoCheng3D

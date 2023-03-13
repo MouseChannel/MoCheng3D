@@ -10,25 +10,30 @@
 namespace MoCheng3D {
 class Image : public Component<vk::Image, Image> {
 public:
-  struct Image_Format {
-    uint32_t width;
-    uint32_t height;
-    vk::Format format = vk::Format::eR8G8B8A8Srgb;
-    vk::ImageType type;
-    vk::ImageTiling tiling;
-    vk::ImageUsageFlagBits usage;
-    vk::SampleCountFlagBits sample;
-  };
+    Image(uint32_t width,
+        uint32_t height,
+        vk::Format format,
+        vk::ImageType type,
+        vk::ImageTiling tiling,
+        vk::ImageUsageFlags usage,
+        vk::SampleCountFlagBits sample);
+    Image(vk::Image other_image, vk::Format format);
+    ~Image();
+    void Create_ImageView(vk::Format format = vk::Format::eR8G8B8A8Srgb);
+    [[nodiscard("Missing ImageView")]] auto& Get_Image_View()
+    {
+        return image_view;
+    }
+    void SetImageLayout(vk::ImageLayout dst_layout, vk::AccessFlags src_access_mask, vk::AccessFlags dst_access_mask, vk::PipelineStageFlags src_stage_mask, vk::PipelineStageFlags dst_stage_mask);
+    void FillImageData(size_t size, void* data);
 
-  Image(Image_Format image_format);
-  Image(vk::Image other_image, vk::Format format);
-  ~Image();
-  void Create_ImageView(vk::Format format = vk::Format::eR8G8B8A8Srgb);
-  [[nodiscard("Missing ImageView")]] auto &Get_Image_View() {
-    return image_view;
-  }
-
-private:
-  vk::ImageView image_view;
+  private:
+    uint32_t width,height;
+    vk::ImageView image_view;
+    vk::DeviceMemory memory;
+    vk::ImageLayout image_layout { vk::ImageLayout::eUndefined };
+    void AllocateMemory();
+    uint32_t FindMemoryTypeIndex(std::uint32_t requirement_type,
+        vk::MemoryPropertyFlags flag);
 };
 } // namespace MoCheng3D

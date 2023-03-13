@@ -11,6 +11,7 @@
 #include "MoCheng3D/Wrapper/Instance.hpp"
 #include "MoCheng3D/Wrapper/Pipeline.hpp"
 #include "MoCheng3D/Wrapper/RenderPass.hpp"
+#include "MoCheng3D/Wrapper/Sampler.hpp"
 #include "MoCheng3D/Wrapper/Semaphore.hpp"
 #include "MoCheng3D/Wrapper/ShaderModule.hpp"
 #include "MoCheng3D/Wrapper/SwapChain.hpp"
@@ -19,15 +20,14 @@
 #include <cassert>
 #include <limits>
 #include <memory>
-#include <vulkan/vulkan_enums.hpp>
-#include <vulkan/vulkan_handles.hpp>
-#include <vulkan/vulkan_structs.hpp>
+
+#include "MoCheng3D/Rendering/Texture.hpp"
 namespace MoCheng3D {
 const std::array<Vertex, 4> vertices = {
-    Vertex { -0.5, -0.5 },
-    Vertex { 0.5, -0.5 },
-    Vertex { 0.5, 0.5 },
-    Vertex { -0.5, 0.5 },
+    Vertex { { -0.5, -0.5 }, { 0, 0 } },
+    Vertex { { 0.5, -0.5 }, { 1, 0 } },
+    Vertex { { 0.5, 0.5 }, { 1, 1 } },
+    Vertex { { -0.5, 0.5 }, { 0, 1 } },
 };
 const std::array<uint32_t, 6> indices = {
     0,
@@ -66,6 +66,8 @@ void Context::Init_Value()
     command_buffer = CommandBuffer::Create();
     swapchain = SwapChain::Create();
     render_pass = RenderPass::Create();
+    texture.reset(new Texture("D:/MoCheng3D/assets/texture.jpg"));
+    sampler.reset(new Sampler());
     Build_pipeline();
     Create_FrameBuffer();
     CreateVertexBuffer();
@@ -160,18 +162,25 @@ void Context::CreateUniformBuffer()
 }
 void Context::CreateDescriptorSet()
 {
-    descriptorPool = DescriptorPool::Create();
-    descriptorset = DescriptorSet::Create(descriptorPool, descriptor_layout);
-    descriptorset->Update(uniform_mvp_buffer, 0);
-    descriptorset->Update(uniform_color_buffer, 1);
+    uint32_t uniform_descriptorset_size = 2 * Get_SwapChain()->Get_Swapchain_Image_size();
+    uint32_t texture_descriptorset_size = Get_SwapChain()->Get_Swapchain_Image_size();
+    descriptorPool_uniform.reset(new DescriptorPool(
+        { vk::DescriptorType::eUniformBuffer,
+            vk::DescriptorType::eCombinedImageSampler },
+        { uniform_descriptorset_size,
+            texture_descriptorset_size }));
+    descriptorset_uniform = DescriptorSet::Create(descriptorPool_uniform, descriptor_layout);
+    descriptorset_uniform->Update(uniform_mvp_buffer, 0, vk::DescriptorType::eUniformBuffer);
+    descriptorset_uniform->Update(uniform_color_buffer, 1,
+        vk::DescriptorType::eUniformBuffer);
+    descriptorset_uniform->Update(texture->GetImage(), 2, vk::DescriptorType::eCombinedImageSampler);
 }
 void Context::Record_Command_Buffer(uint32_t index)
 {
     auto& cmd = command_buffer;
 
     cmd->Reset();
-    vk::CommandBufferBeginInfo begin_info;
-    begin_info.setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+
     vk::RenderPassBeginInfo render_pass_begin_info;
     vk::Rect2D rect;
 
@@ -184,14 +193,14 @@ void Context::Record_Command_Buffer(uint32_t index)
         .setRenderArea(rect)
         .setFramebuffer(frame_buffers[index]->Get_handle())
         .setClearValues(clear_value);
-    cmd->Begin(begin_info);
+    cmd->Begin(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
     {
 
         cmd->BeginRenderPass(render_pass_begin_info, vk::SubpassContents::eInline);
         {
             cmd->BindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
             cmd->BindDescriptorSet(pipeline->GetLayout(),
-                descriptorset->Get_handle()[index]);
+                descriptorset_uniform->Get_handle()[index]);
             vk::DeviceSize offset = 0;
             auto model = Mat4::CreateTranslate(drawed_rect.pos).Mul(Mat4::CreateScale(drawed_rect.size));
             cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(Mat4), (void*)model.GetData());
@@ -266,16 +275,13 @@ void Context::Render()
 void Context::CreatePipelineLayout()
 {
 
-    //   auto mvp_layout_binding =
-    //       Uniform::GetBinding(0, vk::ShaderStageFlagBits::eFragment);
-    //   auto color_layout_binding =
-    //       Uniform::GetBinding(1, vk::ShaderStageFlagBits::eFragment);
-
-    //   auto layout_bindings = Uniform::GetDefaultBinding();
     vk::DescriptorSetLayoutCreateInfo layout_create_info;
     std::vector<vk::DescriptorSetLayoutBinding> layout_bindings {
-        Uniform::GetBinding(0, vk::ShaderStageFlagBits::eVertex),
-        Uniform::GetBinding(1, vk::ShaderStageFlagBits::eFragment)
+        Uniform::GetBinding(0, vk::ShaderStageFlagBits::eVertex,
+            vk::DescriptorType::eUniformBuffer),
+        Uniform::GetBinding(1, vk::ShaderStageFlagBits::eFragment,
+            vk::DescriptorType::eUniformBuffer),
+        Uniform::GetBinding(2, vk::ShaderStageFlagBits::eFragment, vk::DescriptorType::eCombinedImageSampler)
     };
     layout_create_info.setBindings(layout_bindings);
     descriptor_layout = Get_Device()->Get_handle().createDescriptorSetLayout(layout_create_info);

@@ -1,5 +1,6 @@
 
 #include "MoCheng3D/Wrapper/Buffer.hpp"
+#include "MoCheng3D/Helper/CommandManager.hpp"
 #include "MoCheng3D/Wrapper/CommandBuffer.hpp"
 #include "MoCheng3D/Wrapper/CommandPool.hpp"
 #include "MoCheng3D/Wrapper/Device.hpp"
@@ -101,29 +102,26 @@ void Buffer::Update(void* data, size_t size)
 Buffer::Ptr
 Buffer::CreateDeviceBuffer(void* data, size_t size, vk::BufferUsageFlags usage)
 {
-    auto command_buffer = CommandBuffer::Create();
+    std::unique_ptr<CommandBuffer> command_buffer(new CommandBuffer);
     auto host_buffer = Buffer::Create(size,
         vk::BufferUsageFlagBits::eTransferSrc,
         vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
     host_buffer->Update(data, size);
 
-    auto device_buffer = Buffer::Create(size,
-        vk::BufferUsageFlagBits::eTransferDst | usage,
+    auto device_buffer = Buffer::Create(size, vk::BufferUsageFlagBits::eTransferDst | usage,
         vk::MemoryPropertyFlagBits::eDeviceLocal, true);
 
-    vk::CommandBufferBeginInfo begin_info;
-    begin_info.setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+    auto graphic_queue = Context::Get_Singleton().Get_Device()->Get_Graphic_queue();
 
-    command_buffer->Begin(begin_info);
-    command_buffer->CopyBuffer(host_buffer, device_buffer);
-    command_buffer->End();
+    CommandManager::ExecuteCmd(graphic_queue, [&](auto cmd_buffer) {
+        vk::BufferCopy regin;
+        regin.setSize(host_buffer->GetSize()).setDstOffset(0).setSrcOffset(0);
+        cmd_buffer.copyBuffer(host_buffer->Get_handle(),
+            device_buffer->Get_handle(),
+            regin);
+    });
 
-    vk::SubmitInfo submit_info;
-    submit_info.setCommandBuffers(command_buffer->Get_handle());
-    auto command_queue = Context::Get_Singleton().Get_Device()->Get_Graphic_queue();
-    command_queue.submit(submit_info);
-    command_queue.waitIdle();
     return device_buffer;
 }
 

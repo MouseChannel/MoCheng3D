@@ -6,7 +6,8 @@ namespace MoCheng3D {
 class DescriptorSet;
 class DescriptorPool : public Component<vk::DescriptorPool, DescriptorPool> {
 public:
-    DescriptorPool(std::vector<vk::DescriptorType> types, std::vector<uint32_t> size);
+    DescriptorPool(std::vector<std::tuple<vk::DescriptorType, uint32_t>> type_size);
+   
     ~DescriptorPool();
     // std::shared_ptr<DescriptorSet> CreateDescriptorSet();
 private:

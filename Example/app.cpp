@@ -8,18 +8,25 @@
 #include <memory>
 namespace MoCheng3D {
 
-void App::Init() {
-  InitWindow();
-  InitVulkan();
-  Context::Init();
-  //   auto mm = ShaderModule::ReadBinary("/home/MoCheng3D/Shader/frag.frag");
-  //   instance = std::make_shared<Instance>();
-  //   device = std::make_shared<Device>();
+void App::Init()
+{
+    InitWindow();
+    InitVulkan();
+    Context::Init();
+    //   auto mm = ShaderModule::ReadBinary("/home/MoCheng3D/Shader/frag.frag");
+    //   instance = std::make_shared<Instance>();
+    //   device = std::make_shared<Device>();
 }
-void App::InitWindow() {}
-void App::InitVulkan() {}
-void App::Run() {
-  auto instance = Context::Get_Singleton();
-  instance.Update();
+void App::InitWindow() { }
+void App::InitVulkan() { }
+void App::Run()
+{
+
+    vk::DescriptorSetLayout ss;
+    if (!ss) {
+        std::cout << "here" << std::endl;
+    }
+    auto& instance = Context::Get_Singleton();
+    instance.Update();
 }
 } // namespace MoCheng3D

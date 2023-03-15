@@ -12,6 +12,16 @@
 #include <vector>
 #include <vulkan/vulkan.hpp>
 
+#define using_glm
+#ifdef using_glm
+
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#endif // DEBUG using_glm
+
+#define myf
+
 namespace MoCheng3D {
 class Window;
 class Instance;
@@ -32,6 +42,7 @@ class DescriptorPool;
 class DescriptorSet;
 class Texture;
 class Sampler;
+class RenderContext;
 class Context {
 
 public:
@@ -65,15 +76,18 @@ public:
         return command_pool;
     }
     [[nodiscard("missing Sampler")]] auto& Get_Sampler() { return sampler; }
+    [[nodiscard("missing pipeline")]] auto& Get_Pipeline()
+    {
+        return pipeline;
+    }
 
     Context() = default;
     void Init_Value();
     void Build_pipeline();
-    void Create_FrameBuffer();
-    void Create_Fence_Semaphore();
-    void Render();
+    
+    
     void Update();
-    void Record_Command_Buffer(uint32_t index);
+   
 
     std::shared_ptr<Window> window;
     std::shared_ptr<Instance> instance;
@@ -85,14 +99,10 @@ public:
     std::shared_ptr<Pipeline> pipeline;
     std::shared_ptr<RenderPass> render_pass;
     std::vector<std::shared_ptr<Image>> swapchain_images;
-    std::vector<std::shared_ptr<Framebuffer>> frame_buffers;
 
     std::shared_ptr<CommandPool> command_pool;
     std::shared_ptr<CommandBuffer> command_buffer;
-    std::vector<std::shared_ptr<Semaphore>> render_semaphore;
-    std::vector<std::shared_ptr<Semaphore>> present_semaphore;
-
-    std::vector<std::shared_ptr<Fence>> fences;
+ 
     uint32_t current_frame = 0;
     std::shared_ptr<Buffer> vertex_buffer;
     std::shared_ptr<Buffer> indice_buffer;
@@ -103,8 +113,8 @@ public:
 
     std::shared_ptr<DescriptorPool> descriptorPool_texture;
     vk::DescriptorSetLayout descriptor_layout;
-    std::shared_ptr<DescriptorSet> descriptorset_uniform;
-    std::shared_ptr<DescriptorSet> descriptorset_texture;
+    // std::shared_ptr<DescriptorSet> descriptorset_uniform;
+    // std::shared_ptr<DescriptorSet> descriptorset_texture;
     std::shared_ptr<Sampler> sampler;
 
     Rect drawed_rect { .pos { 455, 455 }, .size { 100, 100 } };
@@ -115,10 +125,30 @@ private:
     void CreateUniformBuffer();
     void CreateDescriptorSet();
     void CreateMVPMatrix();
+
+    void ModelMatrixUpdate();
+//
+#ifdef using_glm
+
+    float mAngle = 0;
+    Mat4 model_rotate_matrix;
+    glm::mat4 rotateMatrix = glm::mat4(1.0f);
+    glm::mat4 project_matrix = glm::mat4(1.0f);
+    glm::mat4 view_matrix = glm::mat4(1.0f);
+    std::array<glm::mat4, 3> project_view_matrix;
+#endif
+    //
     vk::PipelineLayout pipeline_layout;
     std::array<Mat4, 3> project_view_data;
     Mat4 m_project_matrix;
     Mat4 m_view_matrix;
     std::shared_ptr<Texture> texture;
+#ifdef myf
+
+    std::unique_ptr<RenderContext> render_context;
+
+#else
+    std::vector<std::shared_ptr<Framebuffer>> frame_buffers;
+#endif // DEBUG
 };
 } // namespace MoCheng3D

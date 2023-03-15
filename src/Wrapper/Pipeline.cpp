@@ -86,8 +86,8 @@ void Pipeline::Make_DepthTest()
 void Pipeline::Make_attach()
 {
     vk::PipelineColorBlendAttachmentState attach;
-    attach.setBlendEnable(true)
-        .setColorWriteMask(vk::ColorComponentFlagBits::eA | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eR)
+    attach.setBlendEnable(true).setColorWriteMask(
+                                   vk::ColorComponentFlagBits::eA | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eR)
         .setSrcColorBlendFactor(vk::BlendFactor::eOne)
         .setDstAlphaBlendFactor(vk::BlendFactor::eOneMinusSrcAlpha)
         .setColorBlendOp(vk::BlendOp::eAdd)

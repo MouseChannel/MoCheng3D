@@ -50,7 +50,7 @@ std::vector<int> Window::WindowUpdate()
 }
 void Window::CreateWindowSurface()
 {
-    auto instance = Context::Get_Singleton().Get_Instance();
+    auto& instance = Context::Get_Singleton().Get_Instance();
     VK_CHECK_SUCCESS(glfwCreateWindowSurface(instance->Get_handle(), window,
                          nullptr, &surface_c),
         "Error: failed to create surface");

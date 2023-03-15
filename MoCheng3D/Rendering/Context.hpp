@@ -43,6 +43,8 @@ class DescriptorSet;
 class Texture;
 class Sampler;
 class RenderContext;
+class Model;
+class Camera;
 class Context {
 
 public:
@@ -84,10 +86,8 @@ public:
     Context() = default;
     void Init_Value();
     void Build_pipeline();
-    
-    
+
     void Update();
-   
 
     std::shared_ptr<Window> window;
     std::shared_ptr<Instance> instance;
@@ -102,9 +102,10 @@ public:
 
     std::shared_ptr<CommandPool> command_pool;
     std::shared_ptr<CommandBuffer> command_buffer;
- 
+
     uint32_t current_frame = 0;
     std::shared_ptr<Buffer> vertex_buffer;
+    std::vector<std::shared_ptr<Buffer>> vertex_buffers;
     std::shared_ptr<Buffer> indice_buffer;
     std::shared_ptr<Buffer> uniform_mvp_buffer;
     std::shared_ptr<Buffer> uniform_color_buffer;
@@ -131,8 +132,8 @@ private:
 #ifdef using_glm
 
     float mAngle = 0;
-    Mat4 model_rotate_matrix;
-    glm::mat4 rotateMatrix = glm::mat4(1.0f);
+
+    glm::mat4 m_Matrix = glm::mat4(1.0f);
     glm::mat4 project_matrix = glm::mat4(1.0f);
     glm::mat4 view_matrix = glm::mat4(1.0f);
     std::array<glm::mat4, 3> project_view_matrix;
@@ -143,12 +144,10 @@ private:
     Mat4 m_project_matrix;
     Mat4 m_view_matrix;
     std::shared_ptr<Texture> texture;
-#ifdef myf
 
+    //-
     std::unique_ptr<RenderContext> render_context;
-
-#else
-    std::vector<std::shared_ptr<Framebuffer>> frame_buffers;
-#endif // DEBUG
+    std::unique_ptr<Model> model;
+    std::unique_ptr<Camera> camera;
 };
 } // namespace MoCheng3D

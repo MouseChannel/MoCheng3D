@@ -23,7 +23,7 @@ public:
     void CopyBuffer(std::shared_ptr<Buffer> src_buffer,
         std::shared_ptr<Buffer> dst_buffer);
     void BindIndicesBuffer(std::shared_ptr<Buffer> buffer, vk::DeviceSize offset, vk::IndexType index_type);
-    void BindVertexBuffer(uint32_t firstBinding, std::shared_ptr<Buffer> buffer,
+    void BindVertexBuffer(uint32_t firstBinding, std::vector<std::shared_ptr<Buffer>> buffers,
         vk::DeviceSize offsets);
     void PushContants(vk::PipelineLayout layout,
         vk::ShaderStageFlags stageFlags, uint32_t offset, uint32_t size, void* value);

@@ -58,11 +58,16 @@ void CommandBuffer::CopyBuffer(Buffer::Ptr src_buffer, Buffer::Ptr dst_buffer)
     m_handle.copyBuffer(src_buffer->Get_handle(), dst_buffer->Get_handle(),
         regin);
 }
-void CommandBuffer::BindVertexBuffer(uint32_t firstBinding, Buffer::Ptr buffer,
-    vk::DeviceSize offsets)
+void CommandBuffer::BindVertexBuffer(uint32_t firstBinding, std::vector<std::shared_ptr<Buffer>> buffers,
+    vk::DeviceSize offset)
 {
-
-    m_handle.bindVertexBuffers(firstBinding, { buffer->Get_handle() }, offsets);
+    std::vector<vk::Buffer> vkbuffers;
+    std::vector<vk::DeviceSize> offsets;
+    for (auto& i : buffers) {
+        vkbuffers.push_back(i->Get_handle());
+        offsets.push_back(offset);
+    }
+    m_handle.bindVertexBuffers(firstBinding, vkbuffers, offsets);
 }
 void CommandBuffer::BindIndicesBuffer(std::shared_ptr<Buffer> buffer,
     vk::DeviceSize offset,

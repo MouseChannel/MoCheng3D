@@ -1,6 +1,7 @@
 #include "MoCheng3D/Rendering/Context.hpp"
 #include "MoCheng3D/Helper/DescriptorManager.hpp"
 #include "MoCheng3D/Rendering/GLFW_Window.hpp"
+#include "MoCheng3D/Rendering/Model.hpp"
 #include "MoCheng3D/Rendering/Render_Context.hpp"
 #include "MoCheng3D/Rendering/Render_Frame.hpp"
 #include "MoCheng3D/Wrapper/Buffer.hpp"
@@ -24,6 +25,7 @@
 #include <limits>
 #include <memory>
 
+#include "MoCheng3D/Helper/Camera.hpp"
 #include "MoCheng3D/Rendering/Texture.hpp"
 
 namespace MoCheng3D {
@@ -65,14 +67,17 @@ void Context::Init_Value()
     instance = Instance::Create();
     window->CreateWindowSurface();
     device = Device::Create();
+    camera.reset(new Camera);
 
     // create command_buffer
     command_pool = CommandPool::Create();
+    model.reset(new Model("D:/MoCheng3D/assets/model.obj"));
+
     command_buffer = CommandBuffer::Create();
     swapchain = SwapChain::Create();
     render_pass = RenderPass::Create();
 
-    texture.reset(new Texture("D:/MoCheng3D/assets/texture.jpg"));
+    texture.reset(new Texture("D:/MoCheng3D/assets/model.png"));
     sampler.reset(new Sampler());
     CreateUniformBuffer();
     Build_pipeline();
@@ -95,8 +100,10 @@ void Context::Build_pipeline()
     vert_shader = ShaderModule::Create("D:/MoCheng3D/Shader/vert.spv");
     frag_shader = ShaderModule::Create("D:/MoCheng3D/Shader/frag.spv");
 
-    auto attr = Vertex::Get_Attr();
-    auto binding = Vertex::Get_Binding();
+    // auto attr = Vertex::Get_Attr();
+    // auto binding = Vertex::Get_Binding();
+    auto attr = model->Get_Attr();
+    auto binding = model->Get_Binding();
     vk::PipelineVertexInputStateCreateInfo vertex_input_create_info;
     vertex_input_create_info.setVertexBindingDescriptions(binding)
         .setVertexAttributeDescriptions(attr);
@@ -125,9 +132,12 @@ void Context::CreateMVPMatrix()
 }
 void Context::CreateVertexBuffer()
 {
-    indice_buffer = Buffer::CreateDeviceBuffer((void*)indices.data(), sizeof(indices), vk::BufferUsageFlagBits::eIndexBuffer);
-    vertex_buffer = Buffer::CreateDeviceBuffer((void*)vertices.data(), sizeof(vertices),
-        vk::BufferUsageFlagBits::eVertexBuffer);
+    // indice_buffer = Buffer::CreateDeviceBuffer((void*)indices.data(),
+    // sizeof(indices), vk::BufferUsageFlagBits::eIndexBuffer); vertex_buffer =
+    // Buffer::CreateDeviceBuffer((void*)vertices.data(), sizeof(vertices),
+    //     vk::BufferUsageFlagBits::eVertexBuffer);
+    indice_buffer = model->Get_index_buffer();
+    vertex_buffers = model->Get_vertex_buffer();
 }
 void Context::CreateUniformBuffer()
 {
@@ -136,7 +146,11 @@ void Context::CreateUniformBuffer()
     project_view_matrix[0] = project_matrix;
     project_view_matrix[1] = view_matrix;
 
-    project_view_matrix[2] = rotateMatrix;
+    project_view_matrix[2] = m_Matrix;
+
+    // project_view_matrix[0] = camera->Get_p_matrix();
+    // project_view_matrix[1] = camera->Get_v_matrix();
+    // project_view_matrix[2] = model->Get_m_matrix();
     uniform_mvp_buffer = Buffer::CreateDeviceBuffer(
         (void*)project_view_matrix.data(),
         sizeof(project_view_matrix),
@@ -175,7 +189,7 @@ void Context::Update()
         drawed_rect.pos.y += mov[0] + mov[1];
 
         drawed_rect.pos.x += mov[2] + mov[3];
-        ModelMatrixUpdate();
+        // ModelMatrixUpdate();
 
         auto cmd = render_context->BeginFrame();
         {
@@ -184,7 +198,10 @@ void Context::Update()
                 Descriptor_Manager::Get_Singleton().Get_DescriptorSet()->Get_handle()[render_context->Get_cur_index()]);
             vk::DeviceSize offset = 0;
 #ifdef using_glm
-            cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(rotateMatrix), (void*)&rotateMatrix);
+            // cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex,
+            //                   0, sizeof(model->Get_m_matrix()),
+            //                   (void *)&model->Get_m_matrix());
+            cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(m_Matrix), (void*)&m_Matrix);
 #else
             auto model = Mat4::CreateTranslate(drawed_rect.pos)
                              .Mul(Mat4::(drawed_rect.size));
@@ -192,9 +209,9 @@ void Context::Update()
             cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(model), (void*)model.GetData());
 
 #endif
-            cmd->BindVertexBuffer(0, vertex_buffer, offset);
+            cmd->BindVertexBuffer(0, vertex_buffers, offset);
             cmd->BindIndicesBuffer(indice_buffer, 0, vk::IndexType::eUint32);
-            cmd->DrawIndex(6, 1, 0, 0, 0);
+            cmd->DrawIndex(model->Get_index(), 1, 0, 0, 0);
         }
         render_context->Submit();
         render_context->EndFrame();
@@ -224,7 +241,7 @@ void Context::ModelMatrixUpdate()
 {
 //  rotateMatrix = glm::mat4(1.0f);
 #ifdef using_glm
-    rotateMatrix = glm::rotate(rotateMatrix, glm::radians(mAngle),
+    m_Matrix = glm::rotate(m_Matrix, glm::radians(mAngle),
         glm::vec3(0.0f, 0.0f, 1.0f));
 
     mAngle = 0.1f;

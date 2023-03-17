@@ -80,15 +80,15 @@ void Context::Init_Value()
     texture.reset(new Texture("D:/MoCheng3D/assets/model.png"));
     sampler.reset(new Sampler());
     CreateUniformBuffer();
-    Build_pipeline();
 
     CreateVertexBuffer();
     CreateMVPMatrix();
-
+    CreatePipelineLayout();
     CreateDescriptorSet();
 
     render_context.reset(new RenderContext(device));
     render_context->Prepare();
+    Build_pipeline();
 }
 
 void Context::Build_pipeline()
@@ -96,7 +96,6 @@ void Context::Build_pipeline()
 
     pipeline = Pipeline::Create();
 
-    CreatePipelineLayout();
     vert_shader = ShaderModule::Create("D:/MoCheng3D/Shader/vert.spv");
     frag_shader = ShaderModule::Create("D:/MoCheng3D/Shader/frag.spv");
 
@@ -122,7 +121,7 @@ void Context::Build_pipeline()
     pipeline->Make_Blend();
     pipeline->Make_DepthTest();
 
-    pipeline->Build_Pipeline(render_pass);
+    pipeline->Build_Pipeline(Get_RenderPass());
 }
 
 void Context::CreateMVPMatrix()
@@ -145,6 +144,11 @@ void Context::CreateUniformBuffer()
 #ifdef using_glm
     project_view_matrix[0] = project_matrix;
     project_view_matrix[1] = view_matrix;
+
+    project_view_matrix[2] = m_Matrix;
+    //
+    project_view_matrix[0] = camera->Get_p_matrix();
+    project_view_matrix[1] = camera->Get_v_matrix();
 
     project_view_matrix[2] = m_Matrix;
 
@@ -180,6 +184,7 @@ void Context::CreateDescriptorSet()
 
     Descriptor_Manager::Get_Singleton().CreateUpdateDescriptorSet();
 }
+std::shared_ptr<RenderPass> Context::Get_RenderPass() { return render_context->Get_render_pass(); }
 
 void Context::Update()
 {
@@ -189,7 +194,7 @@ void Context::Update()
         drawed_rect.pos.y += mov[0] + mov[1];
 
         drawed_rect.pos.x += mov[2] + mov[3];
-        // ModelMatrixUpdate();
+        ModelMatrixUpdate();
 
         auto cmd = render_context->BeginFrame();
         {
@@ -197,18 +202,12 @@ void Context::Update()
             cmd->BindDescriptorSet(pipeline->GetLayout(),
                 Descriptor_Manager::Get_Singleton().Get_DescriptorSet()->Get_handle()[render_context->Get_cur_index()]);
             vk::DeviceSize offset = 0;
-#ifdef using_glm
-            // cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex,
-            //                   0, sizeof(model->Get_m_matrix()),
-            //                   (void *)&model->Get_m_matrix());
-            cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(m_Matrix), (void*)&m_Matrix);
-#else
-            auto model = Mat4::CreateTranslate(drawed_rect.pos)
-                             .Mul(Mat4::(drawed_rect.size));
 
-            cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(model), (void*)model.GetData());
+            cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex,
+                0, sizeof(model->Get_m_matrix()),
+                (void*)&model->Get_m_matrix());
+            // cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(m_Matrix), (void*)&m_Matrix);
 
-#endif
             cmd->BindVertexBuffer(0, vertex_buffers, offset);
             cmd->BindIndicesBuffer(indice_buffer, 0, vk::IndexType::eUint32);
             cmd->DrawIndex(model->Get_index(), 1, 0, 0, 0);

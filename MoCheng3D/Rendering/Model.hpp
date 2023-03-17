@@ -47,14 +47,12 @@ private:
     std::vector<vk::VertexInputBindingDescription> vertex_bindings;
     uint32_t index_size;
 
-    glm::mat4 m_matrix { glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f),
-        glm::vec3(1.0f, 0.0f, 0.0f)) };
-    std::vector<std::shared_ptr<Buffer>> vertex_buffers;
-    // std::shared_ptr<Buffer> m_position_buffer;
+    glm::mat4 m_matrix
 
-    // std::vector<float> m_positions;
-    // std::vector<float> m_uv;
-    // std::vector<uint32_t> m_index;
+        { glm::rotate((glm::rotate(glm::mat4(1.0f), glm::radians(90.0f),
+                          glm::vec3(0.0f, 0.0f, 1.0f))),
+            glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f)) };
+    std::vector<std::shared_ptr<Buffer>> vertex_buffers;
 };
 
 }

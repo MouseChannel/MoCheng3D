@@ -5,15 +5,13 @@
 #include "MoCheng3D/Wrapper/CommandBuffer.hpp"
 #include "MoCheng3D/Wrapper/Device.hpp"
 namespace MoCheng3D {
-Image::Image(uint32_t width,
-    uint32_t height,
-    vk::Format format,
-    vk::ImageType type,
-    vk::ImageTiling tiling,
-    vk::ImageUsageFlags usage,
+Image::Image(uint32_t width, uint32_t height, vk::Format format,
+    vk::ImageType type, vk::ImageTiling tiling,
+    vk::ImageUsageFlags usage, vk::ImageAspectFlags aspect,
     vk::SampleCountFlagBits sample)
     : width(width)
     , height(height)
+    , m_aspect(aspect)
 {
 
     auto& device = Get_Context_Singleton().Get_Device();
@@ -36,7 +34,9 @@ Image::Image(uint32_t width,
     Create_ImageView(format);
 }
 
-Image::Image(vk::Image other_image, vk::Format format)
+Image::Image(vk::Image other_image, vk::ImageLayout image_layout, vk::Format format, vk::ImageAspectFlags aspect)
+    : image_layout(image_layout)
+    , m_aspect(aspect)
 {
     m_handle = other_image;
     Create_ImageView(format);
@@ -49,7 +49,7 @@ void Image::Create_ImageView(vk::Format format)
         .setLevelCount(1)
         .setBaseArrayLayer(0)
         .setLayerCount(1)
-        .setAspectMask(vk::ImageAspectFlagBits::eColor);
+        .setAspectMask(m_aspect);
     vk::ImageViewCreateInfo view_create_info;
     view_create_info.setImage(m_handle)
         .setViewType(vk::ImageViewType::e2D)
@@ -98,7 +98,7 @@ void Image::SetImageLayout(vk::ImageLayout dst_layout, vk::AccessFlags src_acces
             .setBaseArrayLayer(0)
             .setLevelCount(1)
             .setBaseMipLevel(0)
-            .setAspectMask(vk::ImageAspectFlagBits::eColor);
+            .setAspectMask(m_aspect);
 
         vk::ImageMemoryBarrier barrier;
         barrier.setImage(m_handle)

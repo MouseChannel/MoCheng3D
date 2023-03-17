@@ -7,58 +7,89 @@
 #include <vulkan/vulkan_structs.hpp>
 
 namespace MoCheng3D {
-Device::Device() {
+Device::Device()
+{
 
-  auto &instance = Get_Context_Singleton().Get_Instance();
-  
-  auto avalible_physical_device =
-      instance->Get_handle().enumeratePhysicalDevices();
-  physical_device = avalible_physical_device[0];
+    auto& instance = Get_Context_Singleton().Get_Instance();
 
-  assert(physical_device);
-  QueryQueueFamilyIndices();
-  vk::DeviceCreateInfo create_info;
-  vk::DeviceQueueCreateInfo queue_create_info;
+    auto avalible_physical_device = instance->Get_handle().enumeratePhysicalDevices();
+    physical_device = avalible_physical_device[0];
 
-  float priorities = 1.0f;
+    assert(physical_device);
+    QueryQueueFamilyIndices();
+    vk::DeviceCreateInfo create_info;
+    vk::DeviceQueueCreateInfo queue_create_info;
 
-  if (queue_family_indices.present_queue.value() ==
-      queue_family_indices.graphic_queue.value()) {
-  }
+    float priorities = 1.0f;
 
-  queue_create_info.setPQueuePriorities(&priorities)
-      .setQueueCount(1)
-      .setQueueFamilyIndex(queue_family_indices.graphic_queue.value());
+    if (queue_family_indices.present_queue.value() == queue_family_indices.graphic_queue.value()) {
+    }
 
-  create_info.setQueueCreateInfos(queue_create_info)
-      .setPEnabledExtensionNames(deviceRequiredExtensions);
-  m_handle = physical_device.createDevice(create_info);
+    queue_create_info.setPQueuePriorities(&priorities)
+        .setQueueCount(1)
+        .setQueueFamilyIndex(queue_family_indices.graphic_queue.value());
 
-  graphic_queue =
-      m_handle.getQueue(queue_family_indices.graphic_queue.value(), 0);
-  present_queue =
-      m_handle.getQueue(queue_family_indices.present_queue.value(), 0);
+    create_info.setQueueCreateInfos(queue_create_info)
+        .setPEnabledExtensionNames(deviceRequiredExtensions);
+    m_handle = physical_device.createDevice(create_info);
+
+    graphic_queue = m_handle.getQueue(queue_family_indices.graphic_queue.value(), 0);
+    present_queue = m_handle.getQueue(queue_family_indices.present_queue.value(), 0);
 }
 
-Device::~Device() {}
+Device::~Device() { }
 
-void Device::QueryQueueFamilyIndices() {
+void Device::QueryQueueFamilyIndices()
+{
 
-  auto properties = physical_device.getQueueFamilyProperties();
+    auto properties = physical_device.getQueueFamilyProperties();
 
-  auto surface = Get_Context_Singleton().Get_Window()->GetSurface();
-  for (int i = 0; i < properties.size(); i++) {
-    auto property = properties[i];
-    if (property.queueFlags | vk::QueueFlagBits::eGraphics) {
-      queue_family_indices.graphic_queue = i;
+    auto surface = Get_Context_Singleton().Get_Window()->GetSurface();
+    for (int i = 0; i < properties.size(); i++) {
+        auto property = properties[i];
+        if (property.queueFlags | vk::QueueFlagBits::eGraphics) {
+            queue_family_indices.graphic_queue = i;
+        }
+        if (physical_device.getSurfaceSupportKHR(i, surface)) {
+            queue_family_indices.present_queue = i;
+        }
+        if (queue_family_indices.Complete()) {
+            break;
+        }
     }
-    if (physical_device.getSurfaceSupportKHR(i, surface)) {
-      queue_family_indices.present_queue = i;
+}
+
+vk::SampleCountFlagBits Device::Get_sampler_count()
+{
+    auto res = Get_Physical_device().getProperties();
+    auto count = std::min(res.limits.framebufferColorSampleCounts,
+        res.limits.framebufferDepthSampleCounts);
+
+    for (auto i { VkSampleCountFlags(vk::SampleCountFlagBits::e64) };
+         i != VkSampleCountFlags(vk::SampleCountFlagBits::e1); i >>= 1) {
+        auto cur = vk::SampleCountFlagBits(i);
+        if (count & cur) {
+            return cur;
+        }
     }
-    if (queue_family_indices.Complete()) {
-      break;
+    throw std::runtime_error("no vk::sampler_count");
+}
+vk::Format Device::Get_supported_format(std::vector<vk::Format> candidates,
+    vk::ImageTiling tiling,
+    vk::FormatFeatureFlagBits feature)
+{
+    for (auto& format : candidates) {
+
+        auto property = Get_Physical_device().getFormatProperties(format);
+        if (tiling == vk::ImageTiling::eLinear && (property.linearTilingFeatures & feature) == feature) {
+            return format;
+        }
+
+        if (tiling == vk::ImageTiling::eOptimal && (property.optimalTilingFeatures & feature) == feature) {
+            return format;
+        }
     }
-  }
+    throw std::runtime_error("no support_format");
 }
 
 } // namespace MoCheng3D

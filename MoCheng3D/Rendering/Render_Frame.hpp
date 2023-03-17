@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MoCheng3D/Rendering/Render_Target.hpp"
+#include "MoCheng3D/Rendering/Render_Target/Render_Target.hpp"
 #include <vector>
 #include <vulkan/vulkan.hpp>
 
@@ -11,7 +11,7 @@ class Semaphore;
 class RenderFrame {
 
 public:
-    RenderFrame(std::shared_ptr<Device> device, std::unique_ptr<RenderTarget> render_target);
+    RenderFrame(std::shared_ptr<Device> device, std::vector<std::shared_ptr<RenderTarget>>& render_target);
     ~RenderFrame();
     [[nodiscard("Missing FrameBuffer")]] auto& Get_Framebuffer()
     {
@@ -22,10 +22,17 @@ public:
         return render_semaphore;
     }
 
-    [[nodiscard("missing present_semaphore")]] auto& Get_present_semaphore() { return present_semaphore; }
+    [[nodiscard("missing present_semaphore")]] auto& Get_present_semaphore()
+    {
+        return present_semaphore;
+    }
+    [[nodiscard("missing render_targets")]] auto& Get_render_targets()
+    {
+        return m_render_targets;
+    }
 
 private:
-    std::vector<std::unique_ptr<RenderTarget>> render_targets;
+    std::vector<std::shared_ptr<RenderTarget>> m_render_targets;
     std::shared_ptr<Device> m_device;
     std::shared_ptr<Framebuffer> m_framebuffer;
     std::shared_ptr<Semaphore> render_semaphore;

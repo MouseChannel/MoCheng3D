@@ -5,9 +5,15 @@
 namespace MoCheng3D {
 class RenderPass : public Component<vk::RenderPass, RenderPass> {
 public:
-  RenderPass();
-  ~RenderPass();
+    RenderPass();
+    ~RenderPass();
+    void Add_Attachment_description(vk::AttachmentDescription attach_des);
+    void Build();
+    [[nodiscard("Missing subpass")]] auto& Get_Subpass() { return subpass; }
 
 private:
+    std::vector<vk::AttachmentDescription> attachment_descriptions;
+    std::vector<vk::AttachmentReference> attach_references;
+    vk::SubpassDescription subpass;
 };
 } // namespace MoCheng3D

@@ -33,6 +33,7 @@ public:
     {
         return fences[current_frame];
     }
+    [[nodiscard("missing Render_pass")]] auto Get_render_pass() { return m_renderpass; }
     [[nodiscard]] auto Get_cur_index() { return current_index; }
     std::shared_ptr<CommandBuffer> BeginFrame();
     void Submit();
@@ -42,7 +43,7 @@ private:
     std::shared_ptr<Device> m_device;
     std::shared_ptr<SwapChain> m_swapchain;
     std::vector<std::unique_ptr<RenderFrame>> render_frames;
-    void Prepare_RenderPass();
+    void Prepare_RenderPass(std::vector<std::shared_ptr<RenderTarget>>& render_targets);
     std::shared_ptr<RenderPass> m_renderpass;
     std::vector<std::shared_ptr<Fence>> fences;
     uint32_t current_frame { 0 };

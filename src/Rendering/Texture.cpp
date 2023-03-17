@@ -14,9 +14,11 @@ Texture::Texture(std::string_view file_name)
     if (!pixels) {
         throw std::runtime_error("image load failed");
     }
-    image.reset(new Image(w, h, vk::Format::eR8G8B8A8Srgb, vk::ImageType::e2D,
+    image.reset(new Image(
+        w, h, vk::Format::eR8G8B8A8Srgb, vk::ImageType::e2D,
         vk::ImageTiling::eOptimal,
         vk::ImageUsageFlagBits::eSampled | vk::ImageUsageFlagBits::eTransferDst,
+        vk::ImageAspectFlagBits::eColor,
         vk::SampleCountFlagBits::e1));
     image->SetImageLayout(vk::ImageLayout::eTransferDstOptimal,
         vk::AccessFlagBits::eNone,

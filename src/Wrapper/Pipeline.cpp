@@ -78,10 +78,13 @@ void Pipeline::Make_Resterization()
 }
 void Pipeline::Make_MultiSample()
 {
-    multi_sample.setSampleShadingEnable(false).setRasterizationSamples(vk::SampleCountFlagBits::e1);
+    multi_sample.setSampleShadingEnable(false).setRasterizationSamples(Context::Get_Singleton().Get_Device()->Get_sampler_count());
 }
 void Pipeline::Make_DepthTest()
 {
+    depth_test.setDepthTestEnable(true)
+        .setDepthWriteEnable(true)
+        .setDepthCompareOp(vk::CompareOp ::eLessOrEqual);
 }
 void Pipeline::Make_attach()
 {

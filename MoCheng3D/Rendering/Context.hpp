@@ -69,10 +69,12 @@ public:
     {
         return swapchain;
     }
-    [[nodiscard("Missing RenderPass")]] auto& Get_RenderPass()
-    {
-        return render_pass;
-    }
+    // [[nodiscard("Missing RenderPass")]] auto& Get_RenderPass()
+    // {
+    //     return render_pass;
+    // }
+    [[nodiscard("Missing RenderPass")]] std::shared_ptr<RenderPass> Get_RenderPass();
+
     [[nodiscard("Missing CommandPool")]] auto& Get_CommandPool()
     {
         return command_pool;
@@ -114,8 +116,7 @@ public:
 
     std::shared_ptr<DescriptorPool> descriptorPool_texture;
     vk::DescriptorSetLayout descriptor_layout;
-    // std::shared_ptr<DescriptorSet> descriptorset_uniform;
-    // std::shared_ptr<DescriptorSet> descriptorset_texture;
+
     std::shared_ptr<Sampler> sampler;
 
     Rect drawed_rect { .pos { 455, 455 }, .size { 100, 100 } };

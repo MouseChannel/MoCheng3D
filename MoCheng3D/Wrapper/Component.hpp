@@ -4,14 +4,13 @@
 #include <iostream>
 #include <memory>
 
-
 namespace MoCheng3D {
 
 template <typename T, typename K>
 class Component {
 
 protected:
-    T m_handle;
+    T m_handle { VK_NULL_HANDLE };
 
     [[nodiscard]] auto& Get_Context_Singleton()
     {
@@ -25,7 +24,11 @@ public:
     {
         return std::make_shared<K>(args...);
     }
-    [[nodiscard]] T& Get_handle() { return m_handle; }
+    [[nodiscard]] T& Get_handle()
+    {
+        // assert(m_handle);
+        return m_handle;
+    }
     ~Component<T, K>()
     {
         std::cout << "delete  " << typeid(T).name() << std::endl;

@@ -194,7 +194,8 @@ void Context::Update()
         drawed_rect.pos.y += mov[0] + mov[1];
 
         drawed_rect.pos.x += mov[2] + mov[3];
-        ModelMatrixUpdate();
+        // ModelMatrixUpdate();
+        model->Update();
 
         auto cmd = render_context->BeginFrame();
         {
@@ -227,14 +228,20 @@ void Context::CreatePipelineLayout()
         uniform_color_buffer, 1, vk::DescriptorType::eUniformBuffer,
         vk::ShaderStageFlagBits::eFragment);
     Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
-        texture->GetImage(), 2, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment);
+        texture->GetImage(), 2, vk::DescriptorType::eCombinedImageSampler,
+        vk::ShaderStageFlagBits::eFragment);
 
     descriptor_layout = Descriptor_Manager::Get_Singleton().Get_DescriptorSet_layout();
     vk::PipelineLayoutCreateInfo pipeline_create_info;
     vk::PushConstantRange push_constants_range;
-    push_constants_range.setOffset(0).setSize(sizeof(Mat4)).setStageFlags(vk::ShaderStageFlagBits::eVertex);
-    pipeline_create_info.setSetLayouts(descriptor_layout).setPushConstantRanges(push_constants_range);
-    pipeline_layout = Get_Device()->Get_handle().createPipelineLayout(pipeline_create_info);
+    push_constants_range.setOffset(0)
+        .setSize(sizeof(Mat4))
+        .setStageFlags(vk::ShaderStageFlagBits::eVertex);
+    pipeline_create_info.setSetLayouts(descriptor_layout)
+        .setPushConstantRanges(push_constants_range);
+    pipeline_layout = Get_Device()
+                          ->Get_handle()
+                          .createPipelineLayout(pipeline_create_info);
 }
 void Context::ModelMatrixUpdate()
 {

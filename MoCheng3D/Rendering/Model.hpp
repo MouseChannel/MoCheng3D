@@ -37,6 +37,7 @@ public:
         return vertex_buffers;
     }
     [[nodiscard]] auto Get_index() { return index_size; }
+    void Update();
 
 private:
     std::shared_ptr<Buffer> m_position_buffer;
@@ -48,11 +49,13 @@ private:
     uint32_t index_size;
 
     glm::mat4 m_matrix
+        // { glm::mat4(1.0f) };
 
         { glm::rotate((glm::rotate(glm::mat4(1.0f), glm::radians(90.0f),
                           glm::vec3(0.0f, 0.0f, 1.0f))),
             glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f)) };
     std::vector<std::shared_ptr<Buffer>> vertex_buffers;
+    float mAngle;
 };
 
 }

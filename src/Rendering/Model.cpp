@@ -32,6 +32,7 @@ Model::Model(std::string_view path)
             m_index.push_back(m_index.size());
         }
     }
+ 
     m_position_buffer = Buffer::CreateDeviceBuffer(
         m_positions.data(), m_positions.size() * sizeof(m_positions[0]),
         vk::BufferUsageFlagBits::eVertexBuffer);
@@ -61,7 +62,7 @@ Model::Model(std::string_view path)
     vk::VertexInputAttributeDescription vertex_position_attr;
     vertex_position_attr.setBinding(0)
         .setLocation(0)
-        .setFormat(vk::Format::eR32G32Sfloat)
+        .setFormat(vk::Format::eR32G32B32Sfloat)
         .setOffset(0);
     vk::VertexInputAttributeDescription vertex_uv_attr;
     vertex_uv_attr.setBinding(1)
@@ -73,5 +74,11 @@ Model::Model(std::string_view path)
 
     vertex_attrs.push_back(vertex_uv_attr);
 }
+void Model::Update()
+{
+    m_matrix = glm::rotate(m_matrix, glm::radians(mAngle),
+        glm::vec3(0.0f, 1.0f, 0.0f));
 
+    mAngle = 0.99f;
+}
 }

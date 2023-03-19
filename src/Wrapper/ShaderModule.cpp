@@ -17,36 +17,45 @@
 #include <vulkan/vulkan_structs.hpp>
 namespace MoCheng3D {
 
-std::vector<char> ShaderModule::ReadBinary(const std::string &fileName) {
-  std::ifstream file(fileName.c_str(),
-                     std::ios::ate | std::ios::binary | std::ios::in);
+std::vector<char> ShaderModule::ReadBinary(const std::string& fileName)
+{
+    std::ifstream file(fileName.c_str(),
+        std::ios::ate | std::ios::binary | std::ios::in);
 
-  if (!file) {
-    throw std::runtime_error("Error: failed to open shader file");
-  }
+    if (!file) {
+        throw std::runtime_error("Error: failed to open shader file");
+    }
 
-  const size_t fileSize = file.tellg();
-  std::vector<char> buffer(fileSize);
+    const size_t fileSize = file.tellg();
+    std::vector<char> buffer(fileSize);
 
-  file.seekg(0);
-  file.read(buffer.data(), fileSize);
-  file.close();
+    file.seekg(0);
+    file.read(buffer.data(), fileSize);
+    file.close();
 
-  return buffer;
+    return buffer;
 }
-ShaderModule::ShaderModule(const std::string path) {
-    
+ShaderModule::ShaderModule(const std::string path)
+{
 
-  auto source = ReadBinary(path);
+    auto source = ReadBinary(path);
 
-  vk::ShaderModuleCreateInfo createInfo;
-  createInfo
-      .setCodeSize(source.size())
+    vk::ShaderModuleCreateInfo createInfo;
+    createInfo
+        .setCodeSize(source.size())
 
-      .setPCode((const uint32_t *)source.data());
-  auto device = Get_Context_Singleton().Get_Device();
+        .setPCode((const uint32_t*)source.data());
 
-  m_handle = device->Get_handle().createShaderModule(createInfo);
+    m_handle = Get_Context_Singleton()
+                   .Get_Device()
+                   ->Get_handle()
+                   .createShaderModule(createInfo);
 }
-ShaderModule::~ShaderModule() {}
+ShaderModule::~ShaderModule()
+{
+    Get_Context_Singleton()
+        .Get_Device()
+        ->Get_handle()
+        .destroyShaderModule(m_handle);
+}
 } // namespace MoCheng3D

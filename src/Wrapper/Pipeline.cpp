@@ -12,9 +12,10 @@ Pipeline::Pipeline()
 }
 Pipeline::~Pipeline()
 {
+    Get_Context_Singleton().Get_Device()->Get_handle().destroyPipelineLayout(layout);
     Get_Context_Singleton().Get_Device()->Get_handle().destroyPipeline(m_handle);
 }
-void Pipeline::Build_Pipeline(RenderPass::Ptr render_pass)
+void Pipeline::Build_Pipeline(std::shared_ptr<RenderPass> render_pass)
 {
     vk::GraphicsPipelineCreateInfo create_info;
     create_info.setLayout(layout)

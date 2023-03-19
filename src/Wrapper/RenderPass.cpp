@@ -5,18 +5,15 @@
 namespace MoCheng3D {
 RenderPass::RenderPass()
 {
-
-    
 }
 
-void RenderPass::Add_Attachment_description(vk::AttachmentDescription attach_des )
+void RenderPass::Add_Attachment_description(vk::AttachmentDescription attach_des)
 {
     attachment_descriptions.push_back(attach_des);
-   
 }
 void RenderPass::Build()
 {
- 
+
     vk::RenderPassCreateInfo create_info;
     vk::SubpassDependency subpass_dependency;
     subpass_dependency.setSrcSubpass(VK_SUBPASS_EXTERNAL)
@@ -31,5 +28,11 @@ void RenderPass::Build()
     m_handle = Get_Context_Singleton().Get_Device()->Get_handle().createRenderPass(
         create_info);
 }
-RenderPass::~RenderPass() { }
+RenderPass::~RenderPass()
+{
+    Get_Context_Singleton()
+        .Get_Device()
+        ->Get_handle()
+        .destroyRenderPass(m_handle);
+}
 } // namespace MoCheng3D

@@ -4,6 +4,8 @@ layout(location=0)in vec3 Position;
 
 layout(location=2)in vec2 inUV;
 
+ 
+
 layout(location=1)out vec2 outUV;
 
 layout(binding=0)uniform UniformBuffer{

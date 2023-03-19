@@ -5,7 +5,7 @@
 #include "MoCheng3D/Wrapper/Sampler.hpp"
 #include "MoCheng3D/Wrapper/SwapChain.hpp"
 namespace MoCheng3D {
-DescriptorSet::DescriptorSet(DescriptorPool::Ptr descriptorPool, vk::DescriptorSetLayout setLayouts)
+DescriptorSet::DescriptorSet(std::shared_ptr<DescriptorPool>  descriptorPool, vk::DescriptorSetLayout setLayouts)
 {
     vk::DescriptorSetAllocateInfo allocate_info;
     auto swapchain_size = Get_Context_Singleton().Get_SwapChain()->Get_Swapchain_Image_size();
@@ -16,10 +16,10 @@ DescriptorSet::DescriptorSet(DescriptorPool::Ptr descriptorPool, vk::DescriptorS
     m_handle = Get_Context_Singleton().Get_Device()->Get_handle().allocateDescriptorSets(allocate_info);
 }
 
-DescriptorSet::~DescriptorSet()
-{
+DescriptorSet::~DescriptorSet() {
+     
 }
-void DescriptorSet::Update(Buffer::Ptr buffer, uint32_t binding_index, vk::DescriptorType descriptor_type)
+void DescriptorSet::Update(std::shared_ptr<Buffer>  buffer, uint32_t binding_index, vk::DescriptorType descriptor_type)
 {
     for (int i = 0; i < m_handle.size(); i++) {
 

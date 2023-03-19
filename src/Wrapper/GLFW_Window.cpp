@@ -11,6 +11,7 @@ Window::Window(int width, int height)
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    glfwSwapInterval(0);
     window = glfwCreateWindow(width, height, "MoCheng3D11", nullptr, nullptr);
     assert(window);
 }
@@ -51,9 +52,10 @@ std::vector<int> Window::WindowUpdate()
 void Window::CreateWindowSurface()
 {
     auto& instance = Context::Get_Singleton().Get_Instance();
+
     VK_CHECK_SUCCESS(glfwCreateWindowSurface(instance->Get_handle(), window,
-                         nullptr, &surface_c),
+                         nullptr, (VkSurfaceKHR*)(&surface)),
         "Error: failed to create surface");
-    surface = surface_c;
+ 
 }
 } // namespace MoCheng3D

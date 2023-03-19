@@ -28,8 +28,9 @@ public:
     {
         return present_queue;
     }
+    [[nodiscard("missing queue_family_index")]] auto get_queuefamily_index() { return queue_family_indices; }
     [[nodiscard]] vk::SampleCountFlagBits Get_sampler_count();
-    [[nodiscard]] vk::Format Get_supported_format(std::vector<vk::Format> candidates,vk::ImageTiling tiling, vk::FormatFeatureFlagBits feature);
+    [[nodiscard]] vk::Format Get_supported_format(std::vector<vk::Format> candidates, vk::ImageTiling tiling, vk::FormatFeatureFlagBits feature);
     struct QueueFamilyIndices final {
         std::optional<uint32_t> graphic_queue;
         std::optional<uint32_t> present_queue;
@@ -47,6 +48,5 @@ private:
     vk::Queue present_queue;
     vk::SampleCountFlagBits sampler_count;
     vk::FormatProperties supported_formats;
-    
 };
 } // namespace MoCheng3D

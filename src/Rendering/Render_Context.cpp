@@ -8,7 +8,7 @@
 #include "MoCheng3D/Wrapper/RenderPass.hpp"
 #include "MoCheng3D/Wrapper/Semaphore.hpp"
 #include "MoCheng3D/Wrapper/SwapChain.hpp"
-
+ 
 #include "MoCheng3D/Rendering/Render_Target/Final_RenderTarget.hpp"
 
 #include "MoCheng3D/Rendering/Render_Target/MultiSampler_Render_Target.hpp"
@@ -28,7 +28,15 @@ RenderContext::RenderContext(std::shared_ptr<Device> device)
     command_buffer.reset(new CommandBuffer);
 }
 
-RenderContext::~RenderContext() { }
+RenderContext::~RenderContext() {
+    command_buffer.reset();
+    fences.clear();
+    m_renderpass.reset();
+    render_frames.clear();
+    m_swapchain.reset();
+    m_device.reset();
+    
+ }
 
 void RenderContext::Prepare()
 {
@@ -36,27 +44,16 @@ void RenderContext::Prepare()
     for (int i = 0; i < m_swapchain->Get_Swapchain_Image_size(); i++) {
 
         // todo need add multisampler stuff
-        std::shared_ptr<Image> swapchain_image { new Image(
-            m_swapchain->Get_Swapchain_Images()[i], vk::ImageLayout::eColorAttachmentOptimal, m_swapchain->Get_Format(), vk::ImageAspectFlagBits::eColor) };
-
-        // vk::AttachmentDescription attach_des;
-
-        // attach_des.setFormat(m_swapchain->Get_Format())
-        //     .setInitialLayout(vk::ImageLayout::eUndefined)
-        //     .setFinalLayout(vk::ImageLayout::ePresentSrcKHR)
-        //     .setLoadOp(vk::AttachmentLoadOp::eClear)
-        //     .setStoreOp(vk::AttachmentStoreOp::eStore)
-        //     .setStencilLoadOp(vk::AttachmentLoadOp::eDontCare)
-        //     .setStencilStoreOp(vk::AttachmentStoreOp::eDontCare)
-        //     .setSamples(vk::SampleCountFlagBits::e1);
-        // //
+        std::shared_ptr<Image> swapchain_image {
+            new Image(m_swapchain->Get_Swapchain_Images()[i],
+                vk::ImageLayout::eColorAttachmentOptimal,
+                m_swapchain->Get_Format(), vk::ImageAspectFlagBits::eColor )
+        };
 
         std::vector<std::shared_ptr<RenderTarget>> render_targets;
         // render_targets.emplace_back(new RenderTarget(swapchain_image,
         // attach_des));
-        render_targets.emplace_back(
-            Final_RenderTarget::Create(swapchain_image));
-
+        render_targets.emplace_back(Final_RenderTarget::Create(swapchain_image));
         render_targets.emplace_back(MultiSampler_RenderTarget::Create());
         render_targets.emplace_back(Depth_RenderTarget::Create());
         if (!m_renderpass)
@@ -103,15 +100,14 @@ std::shared_ptr<CommandBuffer> RenderContext::Begin_Record_Command_Buffer()
 
     rect.setOffset({ 0, 0 }).setExtent({ 800, 800 });
 
-    vk::ClearColorValue clear_color_value;
-    clear_color_value.setFloat32({ 0.1, 0.1, 0.1, 1 });
+    // vk::ClearColorValue clear_color_value;
+    // clear_color_value.setFloat32({ 0.1, 0.1, 0.1, 1 });
 
     std::vector<vk::ClearValue> clear_values;
 
     for (auto& i : render_frames[0]->Get_render_targets()) {
         clear_values.push_back(i->Get_clearcolor());
     }
-   
 
     render_pass_begin_info.setRenderPass(render_pass->Get_handle())
         .setRenderArea(rect)

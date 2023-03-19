@@ -10,4 +10,8 @@ RenderTarget::RenderTarget(std::shared_ptr<Image> image,
     , attachment_description(description)
 {
 }
+RenderTarget::~RenderTarget()
+{
+    image.reset();
+}
 }

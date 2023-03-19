@@ -21,6 +21,9 @@
 #include "MoCheng3D/Wrapper/SwapChain.hpp"
 #include "MoCheng3D/Wrapper/Uniform.hpp"
 #include "MoCheng3D/Wrapper/Vertex.hpp"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_vulkan.h"
 #include <cassert>
 #include <limits>
 #include <memory>
@@ -50,39 +53,73 @@ std::unique_ptr<Context> Context::_instance = nullptr;
 void Context::Init()
 {
     _instance.reset(new Context);
-    _instance->Init_Value();
 }
-void Context::Quit() { _instance.reset(); }
+void Context::Quit()
+{
 
+    Descriptor_Manager::_instance.reset();
+    _instance->device->Get_handle().waitIdle();
+    _instance->model.reset();
+    _instance->render_context.reset();
+    _instance->texture.reset();
+    _instance->sampler.reset();
+    _instance->descriptorPool_texture.reset();
+    _instance->uniform_color_buffer.reset();
+    _instance->uniform_mvp_buffer.reset();
+    _instance->indice_buffer.reset();
+    _instance->vertex_buffers.clear();
+    _instance->command_buffer.reset();
+    _instance->command_pool.reset();
+    _instance->render_pass.reset();
+    _instance->pipeline.reset();
+    _instance->frag_shader.reset();
+    _instance->vert_shader.reset();
+    _instance->swapchain.reset();
+
+    _instance->m_window.reset();
+
+    _instance->Get_Device()->Get_handle().destroyDescriptorSetLayout(_instance->descriptor_layout);
+    _instance->device.reset();
+    _instance->instance.reset();
+    _instance.reset();
+}
+
+Context::~Context()
+{
+     
+}
 Context& Context::Get_Singleton()
 {
 
     assert(_instance);
     return *_instance;
 }
-
-void Context::Init_Value()
+void Context::create_vk_instance()
 {
-    window = Window::Create(800, 800);
-    instance = Instance::Create();
-    window->CreateWindowSurface();
-    device = Device::Create();
+    instance.reset(new Instance);
+}
+
+void Context::Init_Vulkan(std::shared_ptr<Window> window)
+{
+    m_window = window;
+
+    device.reset(new Device);
     camera.reset(new Camera);
 
     // create command_buffer
-    command_pool = CommandPool::Create();
+    command_pool.reset(new CommandPool);
     model.reset(new Model("D:/MoCheng3D/assets/model.obj"));
 
-    command_buffer = CommandBuffer::Create();
-    swapchain = SwapChain::Create();
-    render_pass = RenderPass::Create();
+    command_buffer.reset(new CommandBuffer);
+    swapchain.reset(new SwapChain);
+    render_pass.reset(new RenderPass);
 
     texture.reset(new Texture("D:/MoCheng3D/assets/model.png"));
     sampler.reset(new Sampler());
-    CreateUniformBuffer();
 
+    CreateUniformBuffer();
     CreateVertexBuffer();
-    CreateMVPMatrix();
+
     CreatePipelineLayout();
     CreateDescriptorSet();
 
@@ -94,10 +131,10 @@ void Context::Init_Value()
 void Context::Build_pipeline()
 {
 
-    pipeline = Pipeline::Create();
+    pipeline.reset(new Pipeline);
 
-    vert_shader = ShaderModule::Create("D:/MoCheng3D/Shader/vert.spv");
-    frag_shader = ShaderModule::Create("D:/MoCheng3D/Shader/frag.spv");
+    vert_shader.reset(new ShaderModule("D:/MoCheng3D/Shader/vert.spv"));
+    frag_shader.reset(new ShaderModule("D:/MoCheng3D/Shader/frag.spv"));
 
     // auto attr = Vertex::Get_Attr();
     // auto binding = Vertex::Get_Binding();
@@ -124,17 +161,9 @@ void Context::Build_pipeline()
     pipeline->Build_Pipeline(Get_RenderPass());
 }
 
-void Context::CreateMVPMatrix()
-{
-    m_view_matrix = Mat4::CreateIdentity();
-    m_project_matrix = Mat4::CreateOrtho(0, 800, 800, 0, -1, 1);
-}
 void Context::CreateVertexBuffer()
 {
-    // indice_buffer = Buffer::CreateDeviceBuffer((void*)indices.data(),
-    // sizeof(indices), vk::BufferUsageFlagBits::eIndexBuffer); vertex_buffer =
-    // Buffer::CreateDeviceBuffer((void*)vertices.data(), sizeof(vertices),
-    //     vk::BufferUsageFlagBits::eVertexBuffer);
+
     indice_buffer = model->Get_index_buffer();
     vertex_buffers = model->Get_vertex_buffer();
 }
@@ -186,36 +215,35 @@ void Context::CreateDescriptorSet()
 }
 std::shared_ptr<RenderPass> Context::Get_RenderPass() { return render_context->Get_render_pass(); }
 
-void Context::Update()
+std::shared_ptr<CommandBuffer> Context::BeginFrame()
 {
-    while (!window->Should_Close()) {
-        window->PollEvents();
-        auto mov = window->WindowUpdate();
-        drawed_rect.pos.y += mov[0] + mov[1];
 
-        drawed_rect.pos.x += mov[2] + mov[3];
-        // ModelMatrixUpdate();
-        model->Update();
+    model->Update();
 
-        auto cmd = render_context->BeginFrame();
-        {
-            cmd->BindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
-            cmd->BindDescriptorSet(pipeline->GetLayout(),
-                Descriptor_Manager::Get_Singleton().Get_DescriptorSet()->Get_handle()[render_context->Get_cur_index()]);
-            vk::DeviceSize offset = 0;
+    auto cmd = render_context->BeginFrame();
+    {
+        cmd->BindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
+        cmd->BindDescriptorSet(pipeline->GetLayout(),
+            Descriptor_Manager::Get_Singleton().Get_DescriptorSet()->Get_handle()[render_context->Get_cur_index()]);
+        vk::DeviceSize offset = 0;
 
-            cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex,
-                0, sizeof(model->Get_m_matrix()),
-                (void*)&model->Get_m_matrix());
-            // cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(m_Matrix), (void*)&m_Matrix);
+        cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex,
+            0, sizeof(model->Get_m_matrix()),
+            (void*)&model->Get_m_matrix());
+        // cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(m_Matrix), (void*)&m_Matrix);
 
-            cmd->BindVertexBuffer(0, vertex_buffers, offset);
-            cmd->BindIndicesBuffer(indice_buffer, 0, vk::IndexType::eUint32);
-            cmd->DrawIndex(model->Get_index(), 1, 0, 0, 0);
-        }
-        render_context->Submit();
-        render_context->EndFrame();
+        cmd->BindVertexBuffer(0, vertex_buffers, offset);
+        cmd->BindIndicesBuffer(indice_buffer, 0, vk::IndexType::eUint32);
+        cmd->DrawIndex(model->Get_index(), 1, 0, 0, 0);
     }
+    return cmd;
+
+    // }
+}
+void Context::EndFrame()
+{
+    render_context->Submit();
+    render_context->EndFrame();
 }
 
 void Context::CreatePipelineLayout()

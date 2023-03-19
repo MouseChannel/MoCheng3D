@@ -12,6 +12,7 @@ Image::Image(uint32_t width, uint32_t height, vk::Format format,
     : width(width)
     , height(height)
     , m_aspect(aspect)
+    , need_delete(true)
 {
 
     auto& device = Get_Context_Singleton().Get_Device();
@@ -34,10 +35,13 @@ Image::Image(uint32_t width, uint32_t height, vk::Format format,
     Create_ImageView(format);
 }
 
-Image::Image(vk::Image other_image, vk::ImageLayout image_layout, vk::Format format, vk::ImageAspectFlags aspect)
+Image::Image(vk::Image other_image, vk::ImageLayout image_layout,
+    vk::Format format, vk::ImageAspectFlags aspect)
     : image_layout(image_layout)
     , m_aspect(aspect)
+    , need_delete(false)
 {
+
     m_handle = other_image;
     Create_ImageView(format);
 }
@@ -141,5 +145,15 @@ void Image::FillImageData(size_t size, void* data)
             region);
     });
 }
-Image::~Image() { }
+Image::~Image()
+{
+    auto& device = Get_Context_Singleton().Get_Device()->Get_handle();
+    device.destroyImageView(image_view);
+    if (need_delete) {
+
+        device.freeMemory(memory);
+        device.destroyImage(m_handle);
+    }
+}
+
 } // namespace MoCheng3D

@@ -32,7 +32,5 @@ DescriptorPool::~DescriptorPool()
         ->Get_handle()
         .destroyDescriptorPool(m_handle);
 }
-// DescriptorSet::Ptr DescriptorPool::CreateDescriptorSet() {
-//     DescriptorSet::Create(Args &&args...)
-// }
+ 
 } // namespace MoCheng3D

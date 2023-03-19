@@ -14,7 +14,8 @@ public:
    void print_available_extensions();
 
 private:
-  VkDebugUtilsMessengerEXT m_Debugger{VK_NULL_HANDLE};
+//   VkDebugUtilsMessengerEXT m_Debugger{VK_NULL_HANDLE};
+  vk::DebugUtilsMessengerEXT m_debugger;
 };
 
 } // namespace MoCheng3D

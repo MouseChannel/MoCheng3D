@@ -24,5 +24,11 @@ Framebuffer::Framebuffer(std::vector<std::shared_ptr<Image>> images)
     m_handle = Get_Context_Singleton().Get_Device()->Get_handle().createFramebuffer(
         create_info);
 }
-Framebuffer::~Framebuffer() { }
+Framebuffer::~Framebuffer()
+{
+    Context::Get_Singleton()
+        .Get_Device()
+        ->Get_handle()
+        .destroyFramebuffer(m_handle);
+}
 } // namespace MoCheng3D

@@ -20,11 +20,13 @@ Buffer::Buffer(size_t size,
 }
 Buffer::~Buffer()
 {
-    Get_Context_Singleton()
 
-        .Get_Device()
-        ->Get_handle()
-        .destroyBuffer(m_handle);
+    auto& device = Get_Context_Singleton()
+
+                       .Get_Device()
+                       ->Get_handle();
+    device.freeMemory(memory);
+    device.destroyBuffer(m_handle);
 }
 void Buffer::CreateBuffer(size_t size, vk::BufferUsageFlags usage)
 {
@@ -98,19 +100,19 @@ void Buffer::Update(void* data, size_t size)
     }
     Unmap();
 }
-
-Buffer::Ptr
+std::shared_ptr<Buffer>
 Buffer::CreateDeviceBuffer(void* data, size_t size, vk::BufferUsageFlags usage)
 {
     std::unique_ptr<CommandBuffer> command_buffer(new CommandBuffer);
-    auto host_buffer = Buffer::Create(size,
+    std::shared_ptr<Buffer> host_buffer, device_buffer;
+    host_buffer.reset(new Buffer(size,
         vk::BufferUsageFlagBits::eTransferSrc,
-        vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
+        vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent));
 
     host_buffer->Update(data, size);
 
-    auto device_buffer = Buffer::Create(size, vk::BufferUsageFlagBits::eTransferDst | usage,
-        vk::MemoryPropertyFlagBits::eDeviceLocal, true);
+    device_buffer.reset(new Buffer(size, vk::BufferUsageFlagBits::eTransferDst | usage,
+        vk::MemoryPropertyFlagBits::eDeviceLocal, true));
 
     auto graphic_queue = Context::Get_Singleton().Get_Device()->Get_Graphic_queue();
 

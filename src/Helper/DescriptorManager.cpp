@@ -90,7 +90,20 @@ void Descriptor_Manager::CreateUpdateDescriptorSet()
         descriptorSet->Update(image, binding.binding, binding.descriptorType);
     }
 }
+Descriptor_Manager::~Descriptor_Manager()
+{
+    layout_bindings.clear();
+    descriptorSet.reset();
 
-// void ddd(std::tuple<vk::DescriptorType, int>) { }
-// void aa() { ddd({ vk::DescriptorType::eAccelerationStructureKHR, 1 }); }
+    // for (auto& i : descriptorSet_buffer_binding_map) {
+    //     i.buffer.reset();
+    // }
+
+    // for (auto& i : descriptorSet_image_binding_map) {
+    //     i.image.reset();
+    // }
+    descriptorSet_buffer_binding_map.clear();
+    descriptorSet_image_binding_map.clear();
+    descriptorPool.reset();
+}
 }

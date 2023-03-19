@@ -12,7 +12,7 @@ public:
     ~Buffer();
     void Update(void* data, size_t size);
     [[nodiscard("Missing Size")]] auto GetSize() { return m_size; }
-    static Buffer::Ptr CreateDeviceBuffer(void* data, size_t size,
+    static std::shared_ptr<Buffer> CreateDeviceBuffer(void* data, size_t size,
         vk::BufferUsageFlags usage);
 
 private:

@@ -23,7 +23,8 @@ class Descriptor_Manager {
 
 public:
     vk::DescriptorSetLayout& Get_DescriptorSet_layout();
-
+    Descriptor_Manager() = default;
+    ~Descriptor_Manager();
     static std::unique_ptr<Descriptor_Manager> _instance;
 
     static Descriptor_Manager& Get_Singleton();
@@ -35,7 +36,11 @@ public:
 
     void CreateDescriptorPool();
     void CreateUpdateDescriptorSet();
-    [[nodiscard("missing descriptor_set")]] auto& Get_DescriptorSet() { return descriptorSet; }
+    [[nodiscard("missing descriptor_set")]] auto& Get_DescriptorSet()
+    {
+        return descriptorSet;
+    }
+    [[nodiscard("missing descriptorPool")]] auto& get_descriptorpool() { return descriptorPool; }
 
 private:
     [[nodiscard]] std::vector<vk::DescriptorSetLayoutBinding>& Get_layout_bindings();

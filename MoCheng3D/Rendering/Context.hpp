@@ -63,7 +63,7 @@ public:
     }
     [[nodiscard("missing window")]] auto& Get_Window()
     {
-        return window;
+        return m_window;
     }
     [[nodiscard("Missing SwapChain")]] auto& Get_SwapChain()
     {
@@ -80,18 +80,21 @@ public:
         return command_pool;
     }
     [[nodiscard("missing Sampler")]] auto& Get_Sampler() { return sampler; }
-    [[nodiscard("missing pipeline")]] auto& Get_Pipeline()
-    {
-        return pipeline;
-    }
+    [[nodiscard("missing pipeline")]] auto& Get_Pipeline() { return pipeline; }
+    // [[nodiscard("missing DescriptorPool")]] auto &get_descriptorpool() {
+
+    //         }
 
     Context() = default;
-    void Init_Value();
+    ~Context();
+    void Init_Vulkan(std::shared_ptr<Window> window);
     void Build_pipeline();
 
-    void Update();
+    std::shared_ptr<CommandBuffer> BeginFrame();
+    void EndFrame();
+    void create_vk_instance();
 
-    std::shared_ptr<Window> window;
+    std::shared_ptr<Window> m_window;
     std::shared_ptr<Instance> instance;
     std::shared_ptr<Device> device;
     std::shared_ptr<SwapChain> swapchain;
@@ -100,13 +103,13 @@ public:
     std::shared_ptr<ShaderModule> frag_shader;
     std::shared_ptr<Pipeline> pipeline;
     std::shared_ptr<RenderPass> render_pass;
-    std::vector<std::shared_ptr<Image>> swapchain_images;
+    // std::vector<std::shared_ptr<Image>> swapchain_images;
 
     std::shared_ptr<CommandPool> command_pool;
     std::shared_ptr<CommandBuffer> command_buffer;
 
     uint32_t current_frame = 0;
-    std::shared_ptr<Buffer> vertex_buffer;
+    // std::shared_ptr<Buffer> vertex_buffer;
     std::vector<std::shared_ptr<Buffer>> vertex_buffers;
     std::shared_ptr<Buffer> indice_buffer;
     std::shared_ptr<Buffer> uniform_mvp_buffer;

@@ -18,6 +18,12 @@ RenderFrame::RenderFrame(std::shared_ptr<Device> device,
     render_semaphore.reset(new Semaphore);
     present_semaphore.reset(new Semaphore);
 }
-RenderFrame::~RenderFrame() { }
+RenderFrame::~RenderFrame() {
+    present_semaphore.reset();
+    render_semaphore.reset();
+    m_framebuffer.reset();
+    m_device.reset();
+    m_render_targets.clear();
+}
 
 }

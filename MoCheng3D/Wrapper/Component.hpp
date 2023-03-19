@@ -18,20 +18,24 @@ protected:
     }
 
 public:
-    using Ptr = std::shared_ptr<K>;
-    template <typename... _Args>
-    static Ptr Create(_Args&&... args)
-    {
-        return std::make_shared<K>(args...);
-    }
+    // using Ptr = std::shared_ptr<K>;
+    // template <typename... _Args>
+    // static Ptr Create(_Args&&... args)
+    // {
+    //     return std::make_shared<K>(args...);
+    // }
     [[nodiscard]] T& Get_handle()
     {
         // assert(m_handle);
         return m_handle;
     }
+    Component<T, K>()
+    {
+        std::cout << "create  " << typeid(T).name() << &m_handle << std::endl;
+    }
     ~Component<T, K>()
     {
-        std::cout << "delete  " << typeid(T).name() << std::endl;
+        std::cout << "delete  " << typeid(T).name() << &m_handle << std::endl;
     }
 };
 } // namespace MoCheng3D

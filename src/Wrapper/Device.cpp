@@ -37,7 +37,12 @@ Device::Device()
     present_queue = m_handle.getQueue(queue_family_indices.present_queue.value(), 0);
 }
 
-Device::~Device() { }
+Device::~Device()
+{
+    // Context::Get_Singleton().Get_Instance()->Get_handle()
+    
+    m_handle.destroy();
+}
 
 void Device::QueryQueueFamilyIndices()
 {

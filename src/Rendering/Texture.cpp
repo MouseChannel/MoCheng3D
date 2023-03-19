@@ -33,6 +33,6 @@ Texture::Texture(std::string_view file_name)
         vk::PipelineStageFlagBits::eFragmentShader);
     stbi_image_free(pixels);
 }
-Texture::~Texture() { }
+Texture::~Texture() { image.reset(); }
 
 }

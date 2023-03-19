@@ -4,17 +4,15 @@
 #include "MoCheng3D/Wrapper/Component.hpp"
 #include "MoCheng3D/Wrapper/RenderPass.hpp"
 
-namespace MoCheng3D
-{
-class Pipeline : public Component<vk::Pipeline, Pipeline>
-{
-  public:
+namespace MoCheng3D {
+class Pipeline : public Component<vk::Pipeline, Pipeline> {
+public:
     Pipeline();
     ~Pipeline();
     void Make_Layout(vk::PipelineLayout pipeline_layout);
 
-    void Make_VertexInput(vk::ArrayProxyNoTemporaries<const vk::VertexInputBindingDescription> const &bind,
-                          vk::ArrayProxyNoTemporaries<const vk::VertexInputAttributeDescription> const &attr);
+    void Make_VertexInput(vk::ArrayProxyNoTemporaries<const vk::VertexInputBindingDescription> const& bind,
+        vk::ArrayProxyNoTemporaries<const vk::VertexInputAttributeDescription> const& attr);
     void Make_VertexAssembly();
     void Make_viewPort();
     void Add_Shader_Modules(vk::ShaderModule shader_module, vk::ShaderStageFlagBits stage);
@@ -24,9 +22,10 @@ class Pipeline : public Component<vk::Pipeline, Pipeline>
     void Make_Blend();
     void Make_attach();
 
-    void Build_Pipeline(RenderPass::Ptr render_pass);
-    [[nodiscard("Missing Layout")]] auto GetLayout(){return layout;}
-  private:
+    void Build_Pipeline(std::shared_ptr<RenderPass> render_pass);
+    [[nodiscard("Missing Layout")]] auto GetLayout() { return layout; }
+
+private:
     vk::PipelineVertexInputStateCreateInfo input_state;
 
     vk::PipelineInputAssemblyStateCreateInfo input_assembly;

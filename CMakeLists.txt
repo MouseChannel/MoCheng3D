@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(MoCheng3D VERSION 0.1.0)
+project(MoCheng3D)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -11,12 +11,19 @@ message(STATUS "compile shader OK")
 
 include(cmake/FindGLFW.cmake)
 
-# include(cmake/sdl2-config.cmake)
 include(cmake/FindVulkan.cmake)
-include_directories(${PROJECT_SOURCE_DIR} ${SDL2_INCLUDE_DIRS})
-file(GLOB_RECURSE SRC src *.cpp)
+include_directories(${PROJECT_SOURCE_DIR})
 
+# imgui
+file(GLOB_RECURSE IMGUI ./imgui *.cpp) 
+add_library(imgui ${IMGUI})
+target_link_libraries(imgui glfw Vulkan)
+
+
+
+# source
+file(GLOB_RECURSE SRC src *.cpp)
 add_library(mocheng3d ${SRC})
-message(STATUS ${SDL2_INCLUDE})
-target_link_libraries(mocheng3d glfw Vulkan)
+
+target_link_libraries(mocheng3d imgui)
 add_subdirectory(Example)

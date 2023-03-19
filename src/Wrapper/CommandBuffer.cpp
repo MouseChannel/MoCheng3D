@@ -33,7 +33,7 @@ void CommandBuffer::BeginRenderPass(vk::RenderPassBeginInfo renderPassInfo,
 }
 void CommandBuffer::EndRenderPass() { m_handle.endRenderPass(); }
 void CommandBuffer::BindPipeline(vk::PipelineBindPoint type,
-    Pipeline::Ptr pipeline)
+    std::shared_ptr<Pipeline> pipeline)
 {
     m_handle.bindPipeline(type, pipeline->Get_handle());
 }
@@ -49,7 +49,7 @@ void CommandBuffer::DrawIndex(uint32_t indexCount, uint32_t instanceCount,
 {
     m_handle.drawIndexed(indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
 }
-void CommandBuffer::CopyBuffer(Buffer::Ptr src_buffer, Buffer::Ptr dst_buffer)
+void CommandBuffer::CopyBuffer(std::shared_ptr<Buffer> src_buffer, std::shared_ptr<Buffer> dst_buffer)
 {
 
     vk::BufferCopy regin;

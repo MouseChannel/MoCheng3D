@@ -1,9 +1,10 @@
 #include "MoCheng3D/Rendering/GLFW_Window.hpp"
 #include "MoCheng3D/Rendering/Context.hpp"
 #include "MoCheng3D/Wrapper/Base.hpp"
+#include "MoCheng3D/Wrapper/Instance.hpp"
 #include <GLFW/glfw3.h>
 #include <cstddef>
-#include <vulkan/vulkan_core.h>
+#include <vulkan/vulkan.hpp>
 
 namespace MoCheng3D {
 Window::Window(int width, int height)
@@ -18,6 +19,10 @@ Window::Window(int width, int height)
 
 Window::~Window()
 {
+    // Context::Get_Singleton()
+    //     .Get_Instance()
+    //     ->Get_handle()
+    //     .destroySurfaceKHR(surface);
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -51,11 +56,10 @@ std::vector<int> Window::WindowUpdate()
 }
 void Window::CreateWindowSurface()
 {
-    auto& instance = Context::Get_Singleton().Get_Instance();
+    // auto& instance = Context::Get_Singleton().Get_Instance();
 
-    VK_CHECK_SUCCESS(glfwCreateWindowSurface(instance->Get_handle(), window,
-                         nullptr, (VkSurfaceKHR*)(&surface)),
-        "Error: failed to create surface");
- 
+    // VK_CHECK_SUCCESS(glfwCreateWindowSurface(instance->Get_handle(), window,
+    //                      nullptr, (VkSurfaceKHR*)(&surface)),
+        // "Error: failed to create surface");
 }
 } // namespace MoCheng3D

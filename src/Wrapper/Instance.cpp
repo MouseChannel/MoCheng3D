@@ -66,6 +66,9 @@ void Instance::print_available_extensions()
 {
 
     uint32_t extensionCount = 0;
+    std::string d { "123" };
+    auto dd = d.c_str();
+
     vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 
     std::vector<VkExtensionProperties> extensions(extensionCount);
@@ -81,28 +84,28 @@ void Instance::print_available_extensions()
 void Instance::Enable_vaildLayer()
 {
 
-    VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
+    // VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
 
-    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-    createInfo.messageSeverity =
-        // VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
-        VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    // createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    // createInfo.messageSeverity =
+    //     // VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
+    //     VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
 
-    createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    // createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
 
-    createInfo.pfnUserCallback = debugCallBack;
-    createInfo.pUserData = nullptr;
-    if (CreateDebugUtilsMessengerEXT(m_handle, &createInfo, nullptr,
-            (VkDebugUtilsMessengerEXT*)(&m_debugger))
-        != VK_SUCCESS) {
-        throw std::runtime_error("Error:failed to create debugger");
-    }
-    std::cout << "vaild here" << std::endl;
+    // createInfo.pfnUserCallback = debugCallBack;
+    // createInfo.pUserData = nullptr;
+    // if (CreateDebugUtilsMessengerEXT(m_handle, &createInfo, nullptr,
+    //         (VkDebugUtilsMessengerEXT*)(&m_debugger))
+    //     != VK_SUCCESS) {
+    //     throw std::runtime_error("Error:failed to create debugger");
+    // }
+    // std::cout << "vaild here" << std::endl;
 }
 
 Instance::~Instance()
 {
-
+    
     m_handle.destroy();
 }
 // "VK_LAYER_KHRONOS_validation"

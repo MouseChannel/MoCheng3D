@@ -21,7 +21,7 @@ void App::Init()
     Context::Init();
     window = Window::Create(800, 800);
     Context::Get_Singleton().create_vk_instance();
-    window->CreateWindowSurface();
+
     Context::Get_Singleton().Init_Vulkan(window);
 
     InitImGui();
@@ -125,6 +125,10 @@ void App::Run()
 }
 App::~App()
 {
+    Context::Get_Singleton().Get_Device()->Get_handle().destroyDescriptorPool(descriptor_pool);
+    ImGui_ImplVulkan_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     Context::Quit();
 }
 } // namespace MoCheng3D

@@ -11,15 +11,14 @@ message(STATUS "compile shader OK")
 
 include(cmake/FindGLFW.cmake)
 
-include(cmake/FindVulkan.cmake)
+# include(cmake/FindVulkan.cmake)
+find_package(Vulkan REQUIRED)
 include_directories(${PROJECT_SOURCE_DIR})
 
 # imgui
-file(GLOB_RECURSE IMGUI ./imgui *.cpp) 
+file(GLOB_RECURSE IMGUI ./imgui *.cpp)
 add_library(imgui ${IMGUI})
-target_link_libraries(imgui glfw Vulkan)
-
-
+target_link_libraries(imgui glfw Vulkan::Vulkan)
 
 # source
 file(GLOB_RECURSE SRC src *.cpp)

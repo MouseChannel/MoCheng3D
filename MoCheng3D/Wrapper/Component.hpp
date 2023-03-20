@@ -35,6 +35,7 @@ public:
     }
     ~Component<T, K>()
     {
+
         std::cout << "delete  " << typeid(T).name() << &m_handle << std::endl;
     }
 };

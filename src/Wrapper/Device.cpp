@@ -5,6 +5,7 @@
 #include <cassert>
 #include <vulkan/vulkan_enums.hpp>
 #include <vulkan/vulkan_structs.hpp>
+#include "MoCheng3D/Wrapper/Window_Surface.hpp"
 
 namespace MoCheng3D {
 Device::Device()
@@ -14,7 +15,17 @@ Device::Device()
 
     auto avalible_physical_device = instance->Get_handle().enumeratePhysicalDevices();
     physical_device = avalible_physical_device[0];
-
+    // auto rr = physical_device.enumerateDeviceExtensionProperties(nullptr, nullptr);
+    uint32_t count;
+    std::vector<VkExtensionProperties> temp;
+    vkEnumerateDeviceExtensionProperties(physical_device, nullptr, &count,
+        nullptr);
+    temp.resize(count);
+    vkEnumerateDeviceExtensionProperties(physical_device, nullptr, &count,
+        temp.data());
+    for (auto& i : temp) {
+        std::cout << i.extensionName << std::endl;
+    }
     assert(physical_device);
     QueryQueueFamilyIndices();
     vk::DeviceCreateInfo create_info;
@@ -40,7 +51,7 @@ Device::Device()
 Device::~Device()
 {
     // Context::Get_Singleton().Get_Instance()->Get_handle()
-    
+
     m_handle.destroy();
 }
 
@@ -49,13 +60,13 @@ void Device::QueryQueueFamilyIndices()
 
     auto properties = physical_device.getQueueFamilyProperties();
 
-    auto surface = Get_Context_Singleton().Get_Window()->GetSurface();
+    auto surface = Get_Context_Singleton().Get_Surface();
     for (int i = 0; i < properties.size(); i++) {
         auto property = properties[i];
         if (property.queueFlags | vk::QueueFlagBits::eGraphics) {
             queue_family_indices.graphic_queue = i;
         }
-        if (physical_device.getSurfaceSupportKHR(i, surface)) {
+        if (physical_device.getSurfaceSupportKHR(i, surface->Get_handle())) {
             queue_family_indices.present_queue = i;
         }
         if (queue_family_indices.Complete()) {

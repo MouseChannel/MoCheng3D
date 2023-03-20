@@ -11,8 +11,7 @@ class Window {
 
 private:
     GLFWwindow* window;
-    vk::SurfaceKHR surface;
- 
+   
 
 public:
     using Ptr = std::shared_ptr<Window>;
@@ -27,6 +26,5 @@ public:
     std::vector<int> WindowUpdate();
     bool Should_Close();
     void CreateWindowSurface();
-    [[nodiscard]] auto GetSurface() { return surface; }
 };
 } // namespace MoCheng3D

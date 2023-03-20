@@ -45,6 +45,7 @@ class Sampler;
 class RenderContext;
 class Model;
 class Camera;
+class Surface;
 class Context {
 
 public:
@@ -61,10 +62,8 @@ public:
     {
         return device;
     }
-    [[nodiscard("missing window")]] auto& Get_Window()
-    {
-        return m_window;
-    }
+    [[nodiscard("missing window")]] auto& Get_Window() { return m_window; }
+    [[nodiscard("missing surface")]] auto& Get_Surface() { return m_surface; }
     [[nodiscard("Missing SwapChain")]] auto& Get_SwapChain()
     {
         return swapchain;
@@ -95,6 +94,7 @@ public:
     void create_vk_instance();
 
     std::shared_ptr<Window> m_window;
+    std::shared_ptr<Surface> m_surface;
     std::shared_ptr<Instance> instance;
     std::shared_ptr<Device> device;
     std::shared_ptr<SwapChain> swapchain;
@@ -117,7 +117,6 @@ public:
 
     std::shared_ptr<DescriptorPool> descriptorPool_uniform;
 
-    std::shared_ptr<DescriptorPool> descriptorPool_texture;
     vk::DescriptorSetLayout descriptor_layout;
 
     std::shared_ptr<Sampler> sampler;

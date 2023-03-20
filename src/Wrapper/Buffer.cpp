@@ -25,8 +25,9 @@ Buffer::~Buffer()
 
                        .Get_Device()
                        ->Get_handle();
-    device.freeMemory(memory);
     device.destroyBuffer(m_handle);
+    device.freeMemory(memory);
+    // vkDestroyBuffer(device, m_handle, nullptr);
 }
 void Buffer::CreateBuffer(size_t size, vk::BufferUsageFlags usage)
 {

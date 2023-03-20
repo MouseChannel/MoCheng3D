@@ -21,6 +21,7 @@
 #include "MoCheng3D/Wrapper/SwapChain.hpp"
 #include "MoCheng3D/Wrapper/Uniform.hpp"
 #include "MoCheng3D/Wrapper/Vertex.hpp"
+#include "MoCheng3D/Wrapper/Window_Surface.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_vulkan.h"
@@ -59,11 +60,12 @@ void Context::Quit()
 
     Descriptor_Manager::_instance.reset();
     _instance->device->Get_handle().waitIdle();
+
     _instance->model.reset();
     _instance->render_context.reset();
     _instance->texture.reset();
     _instance->sampler.reset();
-    _instance->descriptorPool_texture.reset();
+
     _instance->uniform_color_buffer.reset();
     _instance->uniform_mvp_buffer.reset();
     _instance->indice_buffer.reset();
@@ -75,7 +77,7 @@ void Context::Quit()
     _instance->frag_shader.reset();
     _instance->vert_shader.reset();
     _instance->swapchain.reset();
-
+    _instance->m_surface.reset();
     _instance->m_window.reset();
 
     _instance->Get_Device()->Get_handle().destroyDescriptorSetLayout(_instance->descriptor_layout);
@@ -86,7 +88,6 @@ void Context::Quit()
 
 Context::~Context()
 {
-     
 }
 Context& Context::Get_Singleton()
 {
@@ -102,7 +103,7 @@ void Context::create_vk_instance()
 void Context::Init_Vulkan(std::shared_ptr<Window> window)
 {
     m_window = window;
-
+    m_surface.reset(new Surface);
     device.reset(new Device);
     camera.reset(new Camera);
 

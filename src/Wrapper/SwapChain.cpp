@@ -1,5 +1,6 @@
 #include "MoCheng3D/Wrapper/SwapChain.hpp"
 #include "MoCheng3D/Rendering/Context.hpp"
+#include "MoCheng3D/Wrapper/Window_Surface.hpp"
 #include <array>
 #include <cstdint>
 #include <limits>
@@ -7,13 +8,13 @@
 #include <set>
 #include <vector>
 #include <vulkan/vulkan_structs.hpp>
- 
+
 namespace MoCheng3D {
 SwapChain::SwapChain()
 {
     Query_info();
     vk::SwapchainCreateInfoKHR createInfo;
-    auto surface = Get_Context_Singleton().Get_Window()->GetSurface();
+    auto surface = Get_Context_Singleton().Get_Surface();
     auto graphic_queue_index = Get_Context_Singleton().Get_Device()->queue_family_indices.graphic_queue.value();
 
     auto present_queue_index = Get_Context_Singleton().Get_Device()->queue_family_indices.present_queue.value();
@@ -35,7 +36,7 @@ SwapChain::SwapChain()
         .setImageArrayLayers(1)
         .setPresentMode(vk::PresentModeKHR::eFifo)
         .setPreTransform(surfaceInfo.transform)
-        .setSurface(surface)
+        .setSurface(surface->Get_handle())
         .setQueueFamilyIndices(queue_family_index_v)
         .setImageSharingMode(share_mode);
     m_handle = Get_Context_Singleton().Get_Device()->Get_handle().createSwapchainKHR(createInfo);
@@ -51,8 +52,8 @@ SwapChain::~SwapChain()
 void SwapChain::Query_info()
 {
     surfaceInfo.format = Query_surface_Format();
-    auto surface = Get_Context_Singleton().Get_Window()->GetSurface();
-    auto capability = Get_Context_Singleton().Get_Device()->Get_Physical_device().getSurfaceCapabilitiesKHR(surface);
+    auto surface = Get_Context_Singleton().Get_Surface();
+    auto capability = Get_Context_Singleton().Get_Device()->Get_Physical_device().getSurfaceCapabilitiesKHR(surface->Get_handle());
     //   capability.maxImageCount = 3;
 
     //   capability.minImageCount = 1;
@@ -81,8 +82,8 @@ vk::Extent2D SwapChain::Query_surface_Extent(const vk::SurfaceCapabilitiesKHR& c
 vk::SurfaceFormatKHR SwapChain::Query_surface_Format()
 {
     auto physical_device = Get_Context_Singleton().Get_Device()->Get_Physical_device();
-    auto surface = Get_Context_Singleton().Get_Window()->GetSurface();
-    auto available_format = physical_device.getSurfaceFormatsKHR(surface);
+    auto surface = Get_Context_Singleton().Get_Surface();
+    auto available_format = physical_device.getSurfaceFormatsKHR(surface->Get_handle());
     for (auto& format : available_format) {
         if (format.format == vk::Format::eR8G8B8A8Srgb && format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {
             return format;

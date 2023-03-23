@@ -111,8 +111,9 @@ void Image::SetImageLayout(vk::ImageLayout dst_layout, vk::AccessFlags src_acces
             .setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
             .setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
             .setSrcAccessMask(src_access_mask)
-            .setDstAccessMask((dst_access_mask))
+            .setDstAccessMask(dst_access_mask)
             .setSubresourceRange(range);
+
         cmd.pipelineBarrier(src_stage_mask, dst_stage_mask, {}, {}, nullptr,
             barrier);
         image_layout = dst_layout;

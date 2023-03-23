@@ -1,37 +1,16 @@
 #include "MoCheng3D/Wrapper/Instance.hpp"
 #include "GLFW/glfw3.h"
 #include "MoCheng3D/Wrapper/Base.hpp"
+#include "MoCheng3D/Wrapper/DebugUtil.hpp"
 #include <vulkan/vk_enum_string_helper.h>
 #include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_funcs.hpp>
+
 namespace MoCheng3D {
-
-static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallBack(
-    VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-    VkDebugUtilsMessageTypeFlagsEXT messageType,
-    const VkDebugUtilsMessengerCallbackDataEXT* pMessageData, void* pUserData)
-{
-    std::cout << "ValidationLayer: " << pMessageData->pMessage << std::endl;
-
-    return VK_FALSE;
-}
-static VkResult CreateDebugUtilsMessengerEXT(
-    VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-    const VkAllocationCallbacks* pAllocator,
-    VkDebugUtilsMessengerEXT* debugMessenger)
-{
-    auto func = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(
-        instance, "vkCreateDebugUtilsMessengerEXT");
-
-    if (func != nullptr) {
-        return func(instance, pCreateInfo, pAllocator, debugMessenger);
-    } else {
-        return VK_ERROR_EXTENSION_NOT_PRESENT;
-    }
-}
 
 Instance::Instance()
 {
-
+    print_available_layers();
     print_available_extensions();
     vk ::InstanceCreateInfo create_info;
     vk::ApplicationInfo app_info;
@@ -46,7 +25,7 @@ Instance::Instance()
         .setPEnabledLayerNames(vaild_layer);
     m_handle = vk::createInstance(create_info);
 
-    Enable_vaildLayer();
+    // Enable_vaildLayer();
 }
 
 std::vector<const char*> Instance::GetRequiredExtensions()
@@ -59,53 +38,46 @@ std::vector<const char*> Instance::GetRequiredExtensions()
         glfwExtensions + glfwExtensionCount);
 
     extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 
     return extensions;
+}
+void Instance::print_available_layers()
+{
+    std::cout << "Available layers:" << std::endl;
+
+    for (const auto& layer : vk::enumerateInstanceLayerProperties()) {
+        // std::cout << layer.layerName << std::endl;
+    }
+    // vk::enumerateInstanceLayerProperties();
 }
 void Instance::print_available_extensions()
 {
 
-    uint32_t extensionCount = 0;
-    std::string d { "123" };
-    auto dd = d.c_str();
-
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-    std::vector<VkExtensionProperties> extensions(extensionCount);
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount,
-        extensions.data());
-
     std::cout << "Available extensions:" << std::endl;
 
-    for (const auto& extension : extensions) {
-        std::cout << extension.extensionName << std::endl;
+    for (const auto& extension : vk::enumerateInstanceExtensionProperties()) {
+        // std::cout << extension.extensionName << std::endl;
     }
 }
 void Instance::Enable_vaildLayer()
 {
 
-    // VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
+    using severity_bit = vk::DebugUtilsMessageSeverityFlagBitsEXT;
+    using message_bit = vk::DebugUtilsMessageTypeFlagBitsEXT;
+    vk::DebugUtilsMessengerCreateInfoEXT create_info;
+    create_info
+        .setMessageSeverity(severity_bit::eError | severity_bit::eWarning)
+        .setMessageType(message_bit::eGeneral | message_bit::ePerformance | message_bit::eValidation)
+        .setPfnUserCallback(&debugCallBack);
 
-    // createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-    // createInfo.messageSeverity =
-    //     // VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
-    //     VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-
-    // createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-
-    // createInfo.pfnUserCallback = debugCallBack;
-    // createInfo.pUserData = nullptr;
-    // if (CreateDebugUtilsMessengerEXT(m_handle, &createInfo, nullptr,
-    //         (VkDebugUtilsMessengerEXT*)(&m_debugger))
-    //     != VK_SUCCESS) {
-    //     throw std::runtime_error("Error:failed to create debugger");
-    // }
-    // std::cout << "vaild here" << std::endl;
+    m_debugger = m_handle.createDebugUtilsMessengerEXT(create_info);
 }
 
 Instance::~Instance()
 {
-    
+    if (m_debugger)
+        m_handle.destroyDebugUtilsMessengerEXT(m_debugger);
     m_handle.destroy();
 }
 // "VK_LAYER_KHRONOS_validation"

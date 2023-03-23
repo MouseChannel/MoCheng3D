@@ -1,6 +1,6 @@
 IF(WIN32)
     MESSAGE(STATUS "Finding Windows Vulkan😊")
-    set(VULKAN_DIR "D:/Some_software/Vulkan"  )
+    set(VULKAN_DIR "${PROJECT_SOURCE_DIR}/Lib/Vulkan"  )
 
     set(VULKAN_INCLUDE_DIR "${VULKAN_DIR}/Include")
     set(VULKAN_LIB_LOCATION "${VULKAN_DIR}/Lib/vulkan-1.lib")

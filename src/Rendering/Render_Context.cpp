@@ -8,7 +8,7 @@
 #include "MoCheng3D/Wrapper/RenderPass.hpp"
 #include "MoCheng3D/Wrapper/Semaphore.hpp"
 #include "MoCheng3D/Wrapper/SwapChain.hpp"
- 
+
 #include "MoCheng3D/Rendering/Render_Target/Final_RenderTarget.hpp"
 
 #include "MoCheng3D/Rendering/Render_Target/MultiSampler_Render_Target.hpp"
@@ -28,15 +28,15 @@ RenderContext::RenderContext(std::shared_ptr<Device> device)
     command_buffer.reset(new CommandBuffer);
 }
 
-RenderContext::~RenderContext() {
+RenderContext::~RenderContext()
+{
     command_buffer.reset();
     fences.clear();
     m_renderpass.reset();
     render_frames.clear();
     m_swapchain.reset();
     m_device.reset();
-    
- }
+}
 
 void RenderContext::Prepare()
 {
@@ -44,16 +44,16 @@ void RenderContext::Prepare()
     for (int i = 0; i < m_swapchain->Get_Swapchain_Image_size(); i++) {
 
         // todo need add multisampler stuff
-        std::shared_ptr<Image> swapchain_image {
-            new Image(m_swapchain->Get_Swapchain_Images()[i],
-                vk::ImageLayout::eColorAttachmentOptimal,
-                m_swapchain->Get_Format(), vk::ImageAspectFlagBits::eColor )
-        };
+        std::shared_ptr<Image> swapchain_image { new Image(
+            m_swapchain->Get_Swapchain_Images()[i],
+            vk::ImageLayout::eColorAttachmentOptimal, m_swapchain->Get_Format(),
+            vk::ImageAspectFlagBits::eColor) };
 
-        std::vector<std::shared_ptr<RenderTarget>> render_targets;
-        // render_targets.emplace_back(new RenderTarget(swapchain_image,
-        // attach_des));
+        std::vector<std::shared_ptr<RenderTarget>>
+            render_targets;
+
         render_targets.emplace_back(Final_RenderTarget::Create(swapchain_image));
+
         render_targets.emplace_back(MultiSampler_RenderTarget::Create());
         render_targets.emplace_back(Depth_RenderTarget::Create());
         if (!m_renderpass)
@@ -77,7 +77,7 @@ void RenderContext::Prepare_RenderPass(std::vector<std::shared_ptr<RenderTarget>
 
 std::shared_ptr<CommandBuffer> RenderContext::BeginFrame()
 {
-
+    //
     auto result = m_device->Get_handle().acquireNextImageKHR(
         m_swapchain->Get_handle(), std::numeric_limits<uint64_t>::max(),
         Get_cur_render_semaphore()->Get_handle());
@@ -100,9 +100,6 @@ std::shared_ptr<CommandBuffer> RenderContext::Begin_Record_Command_Buffer()
 
     rect.setOffset({ 0, 0 }).setExtent({ 800, 800 });
 
-    // vk::ClearColorValue clear_color_value;
-    // clear_color_value.setFloat32({ 0.1, 0.1, 0.1, 1 });
-
     std::vector<vk::ClearValue> clear_values;
 
     for (auto& i : render_frames[0]->Get_render_targets()) {
@@ -120,23 +117,25 @@ std::shared_ptr<CommandBuffer> RenderContext::Begin_Record_Command_Buffer()
     return cmd;
 }
 
+//---
+void RenderContext::End_Record_Command_Buffer()
+{
+
+    command_buffer->EndRenderPass();
+    command_buffer->End();
+}
 void RenderContext::Submit()
 {
     End_Record_Command_Buffer();
     auto graphic_queue = m_device->Get_Graphic_queue();
+
     vk::SubmitInfo submit_info;
+    const vk::PipelineStageFlags wait_mask { vk::PipelineStageFlagBits::eColorAttachmentOutput };
     submit_info.setCommandBuffers(command_buffer->Get_handle())
         .setWaitSemaphores(Get_cur_render_semaphore()->Get_handle())
+        .setWaitDstStageMask(wait_mask)
         .setSignalSemaphores(Get_cur_present_semaphore()->Get_handle());
     graphic_queue.submit(submit_info, Get_cur_fence()->Get_handle());
-}
-
-//---
-void RenderContext::End_Record_Command_Buffer()
-{
-    auto& cmd = command_buffer;
-    cmd->EndRenderPass();
-    cmd->End();
 }
 void RenderContext::EndFrame()
 {
@@ -147,6 +146,7 @@ void RenderContext::EndFrame()
     }
 
     m_device->Get_handle().resetFences(Get_cur_fence()->Get_handle());
+ 
     vk::PresentInfoKHR present_info;
     present_info.setImageIndices(current_index)
         .setSwapchains(m_swapchain->Get_handle())

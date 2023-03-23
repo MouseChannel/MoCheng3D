@@ -29,14 +29,14 @@ public:
         // assert(m_handle);
         return m_handle;
     }
-    Component<T, K>()
-    {
-        std::cout << "create  " << typeid(T).name() << &m_handle << std::endl;
-    }
-    ~Component<T, K>()
-    {
+    // Component<T, K>()
+    // {
+    //     std::cout << "create  " << typeid(T).name() << &m_handle << std::endl;
+    // }
+    // ~Component<T, K>()
+    // {
 
-        std::cout << "delete  " << typeid(T).name() << &m_handle << std::endl;
-    }
+    //     std::cout << "delete  " << typeid(T).name() << &m_handle << std::endl;
+    // }
 };
 } // namespace MoCheng3D

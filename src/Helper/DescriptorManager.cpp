@@ -50,7 +50,7 @@ void Descriptor_Manager::CreateDescriptorPool()
     }
     std::vector<std::tuple<vk::DescriptorType, uint32_t>> type_arr;
     for (auto& i : type_map) {
-        type_arr.emplace_back(std::tuple<vk::DescriptorType, uint32_t> { i.first, i.second });
+        type_arr.emplace_back(std::tuple<vk::DescriptorType, uint32_t> { i.first, 10 });
     }
     descriptorPool.reset(new DescriptorPool(type_arr));
 }

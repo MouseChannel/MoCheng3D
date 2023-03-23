@@ -28,7 +28,7 @@ Texture::Texture(std::string_view file_name)
 
     image->FillImageData(size, pixels);
     image->SetImageLayout(
-        vk::ImageLayout::eReadOnlyOptimal, vk::AccessFlagBits::eTransferWrite,
+        vk::ImageLayout::eShaderReadOnlyOptimal, vk::AccessFlagBits::eTransferWrite  ,
         vk::AccessFlagBits::eShaderRead, vk::PipelineStageFlagBits::eTransfer,
         vk::PipelineStageFlagBits::eFragmentShader);
     stbi_image_free(pixels);

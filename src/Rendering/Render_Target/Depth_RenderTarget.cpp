@@ -19,20 +19,9 @@ std::unique_ptr<Depth_RenderTarget> Depth_RenderTarget::Create()
             vk::Format::eD24UnormS8Uint },
         vk::ImageTiling::eOptimal,
         vk::FormatFeatureFlagBits::eDepthStencilAttachment);
-    std::shared_ptr<Image> image {
-        new Image(800, 800, depth_format, vk::ImageType::e2D,
-            vk::ImageTiling::eOptimal,
-            vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::ImageAspectFlagBits::eDepth,
-            sampler_count)
-    };
-    image->SetImageLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal,
-        vk::AccessFlagBits::eNone,
-        vk::AccessFlagBits::eDepthStencilAttachmentWrite,
-        vk::PipelineStageFlagBits::eTopOfPipe,
-        vk::PipelineStageFlagBits::eEarlyFragmentTests);
 
     vk::AttachmentDescription des;
-
+ 
     des.setFormat(depth_format)
         .setSamples(sampler_count)
         .setLoadOp(vk::AttachmentLoadOp ::eClear)
@@ -41,6 +30,17 @@ std::unique_ptr<Depth_RenderTarget> Depth_RenderTarget::Create()
         .setStencilStoreOp(vk::AttachmentStoreOp ::eDontCare)
         .setInitialLayout(vk::ImageLayout ::eUndefined)
         .setFinalLayout(vk::ImageLayout ::eDepthStencilAttachmentOptimal);
+
+    std::shared_ptr<Image> image{new Image(
+        800, 800, depth_format, vk::ImageType::e2D, vk::ImageTiling::eOptimal,
+        vk::ImageUsageFlagBits::eDepthStencilAttachment,
+        vk::ImageAspectFlagBits::eDepth, sampler_count)};
+
+    image->SetImageLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal,
+        vk::AccessFlagBits::eNone,
+        vk::AccessFlagBits::eDepthStencilAttachmentWrite | vk::AccessFlagBits::eDepthStencilAttachmentRead,
+        vk::PipelineStageFlagBits::eTopOfPipe,
+        vk::PipelineStageFlagBits::eEarlyFragmentTests);
     return std::unique_ptr<Depth_RenderTarget>(new Depth_RenderTarget(image, des));
 }
 void Depth_RenderTarget::Make_Subpass(uint32_t attachment_index,

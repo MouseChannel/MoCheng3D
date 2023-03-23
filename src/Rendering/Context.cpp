@@ -86,23 +86,18 @@ void Context::Quit()
     _instance.reset();
 }
 
-Context::~Context()
-{
-}
+Context::~Context() { }
 Context& Context::Get_Singleton()
 {
 
     assert(_instance);
     return *_instance;
 }
-void Context::create_vk_instance()
-{
-    instance.reset(new Instance);
-}
 
 void Context::Init_Vulkan(std::shared_ptr<Window> window)
 {
     m_window = window;
+    instance.reset(new Instance);
     m_surface.reset(new Surface);
     device.reset(new Device);
     camera.reset(new Camera);
@@ -142,12 +137,9 @@ void Context::Build_pipeline()
     auto attr = model->Get_Attr();
     auto binding = model->Get_Binding();
     vk::PipelineVertexInputStateCreateInfo vertex_input_create_info;
-    vertex_input_create_info.setVertexBindingDescriptions(binding)
-        .setVertexAttributeDescriptions(attr);
-    pipeline->Add_Shader_Modules(vert_shader->Get_handle(),
-        vk::ShaderStageFlagBits::eVertex);
-    pipeline->Add_Shader_Modules(frag_shader->Get_handle(),
-        vk::ShaderStageFlagBits::eFragment);
+    vertex_input_create_info.setVertexBindingDescriptions(binding).setVertexAttributeDescriptions(attr);
+    pipeline->Add_Shader_Modules(vert_shader->Get_handle(), vk::ShaderStageFlagBits::eVertex);
+    pipeline->Add_Shader_Modules(frag_shader->Get_handle(), vk::ShaderStageFlagBits::eFragment);
 
     pipeline->Make_Layout(pipeline_layout);
     pipeline->Make_VertexInput(binding, attr);
@@ -186,9 +178,7 @@ void Context::CreateUniformBuffer()
     // project_view_matrix[1] = camera->Get_v_matrix();
     // project_view_matrix[2] = model->Get_m_matrix();
     uniform_mvp_buffer = Buffer::CreateDeviceBuffer(
-        (void*)project_view_matrix.data(),
-        sizeof(project_view_matrix),
-        vk::BufferUsageFlagBits::eUniformBuffer);
+        (void*)project_view_matrix.data(), sizeof(project_view_matrix), vk::BufferUsageFlagBits::eUniformBuffer);
 
 #else
 
@@ -198,14 +188,11 @@ void Context::CreateUniformBuffer()
     auto model = Mat4::CreateTranslate(drawed_rect.pos).Mul(Mat4::CreateScale(drawed_rect.size));
     project_view_data[2] = model;
     uniform_mvp_buffer = Buffer::CreateDeviceBuffer(
-        (void*)project_view_data.data(),
-        sizeof(project_view_data),
-        vk::BufferUsageFlagBits::eUniformBuffer);
+        (void*)project_view_data.data(), sizeof(project_view_data), vk::BufferUsageFlagBits::eUniformBuffer);
 
 #endif
     uniform_color_buffer = Buffer::CreateDeviceBuffer(
-        (void*)color_data.data(), sizeof(color_data),
-        vk::BufferUsageFlagBits::eUniformBuffer);
+        (void*)color_data.data(), sizeof(color_data), vk::BufferUsageFlagBits::eUniformBuffer);
 }
 void Context::CreateDescriptorSet()
 {
@@ -214,32 +201,35 @@ void Context::CreateDescriptorSet()
 
     Descriptor_Manager::Get_Singleton().CreateUpdateDescriptorSet();
 }
-std::shared_ptr<RenderPass> Context::Get_RenderPass() { return render_context->Get_render_pass(); }
+std::shared_ptr<RenderPass> Context::Get_RenderPass()
+{
+    return render_context->Get_render_pass();
+}
 
 std::shared_ptr<CommandBuffer> Context::BeginFrame()
 {
 
     model->Update();
-
+    Get_Device()->Get_handle().waitIdle();
     auto cmd = render_context->BeginFrame();
     {
         cmd->BindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
-        cmd->BindDescriptorSet(pipeline->GetLayout(),
+
+        cmd->BindDescriptorSet(
+            pipeline->GetLayout(),
             Descriptor_Manager::Get_Singleton().Get_DescriptorSet()->Get_handle()[render_context->Get_cur_index()]);
-        vk::DeviceSize offset = 0;
 
-        cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex,
-            0, sizeof(model->Get_m_matrix()),
+        cmd->PushContants(pipeline_layout,
+            vk::ShaderStageFlagBits::eVertex,
+            0,
+            sizeof(model->Get_m_matrix()),
             (void*)&model->Get_m_matrix());
-        // cmd->PushContants(pipeline_layout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(m_Matrix), (void*)&m_Matrix);
 
-        cmd->BindVertexBuffer(0, vertex_buffers, offset);
+        cmd->BindVertexBuffer(0, vertex_buffers, 0);
         cmd->BindIndicesBuffer(indice_buffer, 0, vk::IndexType::eUint32);
         cmd->DrawIndex(model->Get_index(), 1, 0, 0, 0);
     }
     return cmd;
-
-    // }
 }
 void Context::EndFrame()
 {
@@ -251,33 +241,24 @@ void Context::CreatePipelineLayout()
 {
 
     Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
-        uniform_mvp_buffer, 0, vk::DescriptorType::eUniformBuffer,
-        vk::ShaderStageFlagBits::eVertex);
+        uniform_mvp_buffer, 0, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex);
     Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
-        uniform_color_buffer, 1, vk::DescriptorType::eUniformBuffer,
-        vk::ShaderStageFlagBits::eFragment);
+        uniform_color_buffer, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eFragment);
     Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
-        texture->GetImage(), 2, vk::DescriptorType::eCombinedImageSampler,
-        vk::ShaderStageFlagBits::eFragment);
+        texture->GetImage(), 2, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment);
 
     descriptor_layout = Descriptor_Manager::Get_Singleton().Get_DescriptorSet_layout();
     vk::PipelineLayoutCreateInfo pipeline_create_info;
     vk::PushConstantRange push_constants_range;
-    push_constants_range.setOffset(0)
-        .setSize(sizeof(Mat4))
-        .setStageFlags(vk::ShaderStageFlagBits::eVertex);
-    pipeline_create_info.setSetLayouts(descriptor_layout)
-        .setPushConstantRanges(push_constants_range);
-    pipeline_layout = Get_Device()
-                          ->Get_handle()
-                          .createPipelineLayout(pipeline_create_info);
+    push_constants_range.setOffset(0).setSize(sizeof(Mat4)).setStageFlags(vk::ShaderStageFlagBits::eVertex);
+    pipeline_create_info.setSetLayouts(descriptor_layout).setPushConstantRanges(push_constants_range);
+    pipeline_layout = Get_Device()->Get_handle().createPipelineLayout(pipeline_create_info);
 }
 void Context::ModelMatrixUpdate()
 {
 //  rotateMatrix = glm::mat4(1.0f);
 #ifdef using_glm
-    m_Matrix = glm::rotate(m_Matrix, glm::radians(mAngle),
-        glm::vec3(0.0f, 0.0f, 1.0f));
+    m_Matrix = glm::rotate(m_Matrix, glm::radians(mAngle), glm::vec3(0.0f, 0.0f, 1.0f));
 
     mAngle = 0.1f;
 #endif

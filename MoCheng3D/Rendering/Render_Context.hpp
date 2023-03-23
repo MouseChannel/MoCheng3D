@@ -51,6 +51,7 @@ private:
     std::shared_ptr<CommandBuffer> command_buffer;
     std::shared_ptr<CommandBuffer> Begin_Record_Command_Buffer();
     void End_Record_Command_Buffer();
+    
 };
 
 }

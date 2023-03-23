@@ -1,8 +1,8 @@
 #pragma once
 #include "MoCheng3D/Wrapper/Component.hpp"
 #include "MoCheng3D/Wrapper/Instance.hpp"
-#include <vulkan/vulkan_handles.hpp>
-#define GLFW_INCLUDE_VULKAN
+ 
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.hpp>
 

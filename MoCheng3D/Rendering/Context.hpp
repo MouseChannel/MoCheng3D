@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
+
 #include <vulkan/vulkan.hpp>
 
 #define using_glm
@@ -91,7 +92,7 @@ public:
 
     std::shared_ptr<CommandBuffer> BeginFrame();
     void EndFrame();
-    void create_vk_instance();
+ 
 
     std::shared_ptr<Window> m_window;
     std::shared_ptr<Surface> m_surface;

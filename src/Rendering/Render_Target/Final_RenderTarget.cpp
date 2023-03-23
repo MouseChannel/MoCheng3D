@@ -6,8 +6,9 @@
 
 namespace MoCheng3D {
 Final_RenderTarget::Final_RenderTarget(std::shared_ptr<Image> image,
-                                       vk::AttachmentDescription des)
-    : RenderTarget(image, des) {
+    vk::AttachmentDescription des)
+    : RenderTarget(image, des)
+{
     clear_color.setColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 }
 std::unique_ptr<Final_RenderTarget> Final_RenderTarget::Create(std::shared_ptr<Image> image)
@@ -17,7 +18,7 @@ std::unique_ptr<Final_RenderTarget> Final_RenderTarget::Create(std::shared_ptr<I
 
     vk::AttachmentDescription des;
     // auto la = Context::Get_Singleton().Get_SwapChain()->Get_handle().
-    auto rer = Context::Get_Singleton().Get_SwapChain()->Get_Swapchain_Image_size();
+
     des.setFormat(swapchain_format)
         .setSamples(vk::SampleCountFlagBits::e1)
         .setLoadOp(vk::AttachmentLoadOp ::eClear)
@@ -34,6 +35,7 @@ void Final_RenderTarget::Make_Subpass(uint32_t attachment_index,
 
     attach_reference.setAttachment(attachment_index)
         .setLayout(image->Get_image_layout());
+    // subpass.setColorAttachments(attach_reference);
     subpass.setResolveAttachments(attach_reference);
 }
 }

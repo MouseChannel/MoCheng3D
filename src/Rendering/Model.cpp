@@ -12,8 +12,7 @@ Model::Model(std::string_view path)
     std::string err;
     std::string warn;
 
-    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err,
-            path.data())) {
+    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.data())) {
         throw std::runtime_error("Error: failed to load model");
     }
     std::vector<float> m_positions;
@@ -32,43 +31,29 @@ Model::Model(std::string_view path)
             m_index.push_back(m_index.size());
         }
     }
- 
+
     m_position_buffer = Buffer::CreateDeviceBuffer(
-        m_positions.data(), m_positions.size() * sizeof(m_positions[0]),
-        vk::BufferUsageFlagBits::eVertexBuffer);
-    m_uv_buffer = Buffer::CreateDeviceBuffer(
-        m_uv.data(), m_uv.size() * sizeof(m_uv[0]),
-        vk::BufferUsageFlagBits::eVertexBuffer);
+        m_positions.data(), m_positions.size() * sizeof(m_positions[0]), vk::BufferUsageFlagBits::eVertexBuffer);
+    m_uv_buffer = Buffer::CreateDeviceBuffer(m_uv.data(), m_uv.size() * sizeof(m_uv[0]), vk::BufferUsageFlagBits::eVertexBuffer);
     m_index_buffer = Buffer::CreateDeviceBuffer(
-        m_index.data(), m_index.size() * sizeof(m_index[0]),
-        vk::BufferUsageFlagBits::eIndexBuffer);
+        m_index.data(), m_index.size() * sizeof(m_index[0]), vk::BufferUsageFlagBits::eIndexBuffer);
 
     std::cout << "model index size: " << m_index.size() << std::endl;
     index_size = m_index.size();
     // make vertex binding
     vk::VertexInputBindingDescription vertex_position_binding;
-    vertex_position_binding.setBinding(0)
-        .setInputRate(vk::VertexInputRate::eVertex)
-        .setStride(sizeof(float) * 3);
+    vertex_position_binding.setBinding(0).setInputRate(vk::VertexInputRate::eVertex).setStride(sizeof(float) * 3);
 
     vk::VertexInputBindingDescription vertex_uv_binding;
-    vertex_uv_binding.setBinding(1)
-        .setInputRate(vk::VertexInputRate::eVertex)
-        .setStride(sizeof(float) * 2);
+    vertex_uv_binding.setBinding(1).setInputRate(vk::VertexInputRate::eVertex).setStride(sizeof(float) * 2);
     vertex_bindings.push_back(vertex_position_binding);
 
     vertex_bindings.push_back(vertex_uv_binding);
     // make vertex attribution
     vk::VertexInputAttributeDescription vertex_position_attr;
-    vertex_position_attr.setBinding(0)
-        .setLocation(0)
-        .setFormat(vk::Format::eR32G32B32Sfloat)
-        .setOffset(0);
+    vertex_position_attr.setBinding(0).setLocation(0).setFormat(vk::Format::eR32G32B32Sfloat).setOffset(0);
     vk::VertexInputAttributeDescription vertex_uv_attr;
-    vertex_uv_attr.setBinding(1)
-        .setLocation(2)
-        .setFormat(vk::Format::eR32G32Sfloat)
-        .setOffset(0);
+    vertex_uv_attr.setBinding(1).setLocation(2).setFormat(vk::Format::eR32G32Sfloat).setOffset(0);
 
     vertex_attrs.push_back(vertex_position_attr);
 
@@ -76,9 +61,8 @@ Model::Model(std::string_view path)
 }
 void Model::Update()
 {
-    m_matrix = glm::rotate(m_matrix, glm::radians(mAngle),
-        glm::vec3(0.0f, 1.0f, 0.0f));
+    m_matrix = glm::rotate(m_matrix, glm::radians(mAngle), glm::vec3(0.0f, 1.0f, 0.0f));
 
     mAngle = 0.99f;
 }
-}
+} // namespace MoCheng3D

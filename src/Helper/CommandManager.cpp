@@ -11,10 +11,7 @@ void CommandManager::ExecuteCmd(vk::Queue queue, RecordCmdFunc func)
         func(cmd->Get_handle());
     cmd->End();
     submit_Cmd(queue, cmd);
-    // vk::SubmitInfo submitInfo;
-    // submitInfo.setCommandBuffers(cmd->Get_handle());
-    // queue.submit(submitInfo);
-    // queue.waitIdle();
+    
 }
 void CommandManager::submit_Cmd(vk::Queue queue,
     std::shared_ptr<CommandBuffer> cmd)

@@ -15,7 +15,7 @@ Image::Image(uint32_t width, uint32_t height, vk::Format format,
     , need_delete(true)
 {
 
-    auto& device = Get_Context_Singleton().Get_Device();
+    auto& device = Get_Context_Singleton()->Get_Device();
     vk::ImageCreateInfo create_info;
     vk::Extent3D extent { width, height, 1 };
     create_info.setImageType(vk::ImageType::e2D)
@@ -30,7 +30,7 @@ Image::Image(uint32_t width, uint32_t height, vk::Format format,
 
     m_handle = device->Get_handle().createImage(create_info);
     AllocateMemory();
-    Get_Context_Singleton().Get_Device()->Get_handle().bindImageMemory(
+    Get_Context_Singleton()->Get_Device()->Get_handle().bindImageMemory(
         m_handle, memory, 0);
     Create_ImageView(format);
 }
@@ -59,14 +59,14 @@ void Image::Create_ImageView(vk::Format format)
         .setViewType(vk::ImageViewType::e2D)
         .setFormat(format)
         .setSubresourceRange(range);
-    image_view = Get_Context_Singleton().Get_Device()->Get_handle().createImageView(
+    image_view = Get_Context_Singleton()->Get_Device()->Get_handle().createImageView(
         view_create_info);
 }
 
 void Image::AllocateMemory()
 {
     auto image_memory_requirement = Get_Context_Singleton()
-                                        .Get_Device()
+                                        ->Get_Device()
                                         ->Get_handle()
                                         .getImageMemoryRequirements(m_handle);
     auto memory_index = FindMemoryTypeIndex(image_memory_requirement.memoryTypeBits, vk::MemoryPropertyFlagBits::eDeviceLocal);
@@ -74,7 +74,7 @@ void Image::AllocateMemory()
     allocate_info.setAllocationSize(image_memory_requirement.size)
         .setMemoryTypeIndex(memory_index);
     memory = Get_Context_Singleton()
-                 .Get_Device()
+                 ->Get_Device()
                  ->Get_handle()
                  .allocateMemory(allocate_info);
 }
@@ -82,7 +82,7 @@ uint32_t Image::FindMemoryTypeIndex(std::uint32_t requirement_type,
     vk::MemoryPropertyFlags flag)
 {
     auto memory_properties = Get_Context_Singleton()
-                                 .Get_Device()
+                                 ->Get_Device()
                                  ->Get_Physical_device()
                                  .getMemoryProperties();
     for (int i = 0; i < memory_properties.memoryTypeCount; i++) {
@@ -95,7 +95,7 @@ uint32_t Image::FindMemoryTypeIndex(std::uint32_t requirement_type,
 
 void Image::SetImageLayout(vk::ImageLayout dst_layout, vk::AccessFlags src_access_mask, vk::AccessFlags dst_access_mask, vk::PipelineStageFlags src_stage_mask, vk::PipelineStageFlags dst_stage_mask)
 {
-    auto graphic_queue = Get_Context_Singleton().Get_Device()->Get_Graphic_queue();
+    auto graphic_queue = Get_Context_Singleton()->Get_Device()->Get_Graphic_queue();
     CommandManager::ExecuteCmd(graphic_queue, [&](auto cmd) {
         vk::ImageSubresourceRange range;
         range.setLayerCount(1)
@@ -127,7 +127,7 @@ void Image::FillImageData(size_t size, void* data)
     };
 
     image_buffer->Update(data, size);
-    auto graphic_queue = Get_Context_Singleton().Get_Device()->Get_Graphic_queue();
+    auto graphic_queue = Get_Context_Singleton()->Get_Device()->Get_Graphic_queue();
     CommandManager::ExecuteCmd(graphic_queue, [&](auto cmd_buffer) {
         vk::BufferImageCopy region;
         vk::ImageSubresourceLayers subsource;
@@ -148,7 +148,7 @@ void Image::FillImageData(size_t size, void* data)
 }
 Image::~Image()
 {
-    auto& device = Get_Context_Singleton().Get_Device()->Get_handle();
+    auto& device = Get_Context_Singleton()->Get_Device()->Get_handle();
     device.destroyImageView(image_view);
     if (need_delete) {
 

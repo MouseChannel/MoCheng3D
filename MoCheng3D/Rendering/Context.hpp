@@ -1,12 +1,11 @@
 
 #pragma once
 
- 
+#include "MoCheng3D/Helper/Instance_base.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <vector>
-
 #include <vulkan/vulkan.hpp>
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -37,14 +36,14 @@ class RenderContext;
 class Model;
 class Camera;
 class Surface;
-class Context {
+class Context : public Instance_base<Context> {
 
 public:
-    static std::unique_ptr<Context> _instance;
-    static void Init();
+    // static std::unique_ptr<Context> _instance;
+    // static void Init();
     static void Quit();
 
-    static Context& Get_Singleton();
+    // static Context& Get_Singleton();
     [[nodiscard("Missing Instance")]] auto& Get_Instance()
     {
         return instance;
@@ -69,7 +68,7 @@ public:
     [[nodiscard("missing Sampler")]] auto& Get_Sampler() { return sampler; }
     [[nodiscard("missing pipeline")]] auto& Get_Pipeline() { return pipeline; }
 
-    Context() = default;
+    Context();
     ~Context();
     void Init_Vulkan(std::shared_ptr<Window> window);
     void Build_pipeline();
@@ -91,7 +90,7 @@ public:
     std::shared_ptr<CommandPool> command_pool;
     std::shared_ptr<CommandBuffer> command_buffer;
 
-    uint32_t current_frame = 0;
+    // uint32_t current_frame = 0;
 
     std::shared_ptr<Buffer> uniform_mvp_buffer;
     std::shared_ptr<Buffer> uniform_color_buffer;
@@ -99,7 +98,6 @@ public:
     std::shared_ptr<DescriptorPool> descriptorPool_uniform;
 
     std::shared_ptr<Sampler> sampler;
- 
 
 private:
     void CreateUniformBuffer();

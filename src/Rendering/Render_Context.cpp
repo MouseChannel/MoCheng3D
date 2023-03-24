@@ -19,8 +19,8 @@ RenderContext::RenderContext(std::shared_ptr<Device> device)
     : m_device(device)
 
 {
-    m_swapchain = Context::Get_Singleton().Get_SwapChain();
-    for (int i = 0; i < Context::Get_Singleton().Get_SwapChain()->Get_Swapchain_Image_size();
+    m_swapchain = Context::Get_Singleton()->Get_SwapChain();
+    for (int i = 0; i < Context::Get_Singleton()->Get_SwapChain()->Get_Swapchain_Image_size();
          i++) {
         fences.emplace_back(new Fence);
     }
@@ -94,7 +94,7 @@ std::shared_ptr<CommandBuffer> RenderContext::Begin_Record_Command_Buffer()
     auto& cmd = command_buffer;
 
     cmd->Reset();
-    auto render_pass = Context::Get_Singleton().Get_RenderPass();
+    auto render_pass = Context::Get_Singleton()->Get_RenderPass();
     vk::RenderPassBeginInfo render_pass_begin_info;
     vk::Rect2D rect;
 
@@ -110,7 +110,7 @@ std::shared_ptr<CommandBuffer> RenderContext::Begin_Record_Command_Buffer()
         .setRenderArea(rect)
         .setFramebuffer(Get_RenderFrame(current_index)->Get_Framebuffer()->Get_handle())
         .setClearValues(clear_values);
-    auto pipeline = Context::Get_Singleton().Get_Pipeline();
+    auto pipeline = Context::Get_Singleton()->Get_Pipeline();
     cmd->Begin(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
 
     cmd->BeginRenderPass(render_pass_begin_info, vk::SubpassContents::eInline);
@@ -146,7 +146,7 @@ void RenderContext::EndFrame()
     }
 
     m_device->Get_handle().resetFences(Get_cur_fence()->Get_handle());
- 
+
     vk::PresentInfoKHR present_info;
     present_info.setImageIndices(current_index)
         .setSwapchains(m_swapchain->Get_handle())
@@ -160,6 +160,6 @@ void RenderContext::EndFrame()
         std::cout << "present fail" << std::endl;
     }
     current_frame++;
-    current_frame %= Context::Get_Singleton().Get_SwapChain()->Get_Swapchain_Image_size();
+    current_frame %= Context::Get_Singleton()->Get_SwapChain()->Get_Swapchain_Image_size();
 }
 } // namespace MoCheng3D

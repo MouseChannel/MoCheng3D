@@ -47,14 +47,14 @@ ShaderModule::ShaderModule(const std::string path)
         .setPCode((const uint32_t*)source.data());
 
     m_handle = Get_Context_Singleton()
-                   .Get_Device()
+                   ->Get_Device()
                    ->Get_handle()
                    .createShaderModule(createInfo);
 }
 ShaderModule::~ShaderModule()
 {
     Get_Context_Singleton()
-        .Get_Device()
+        ->Get_Device()
         ->Get_handle()
         .destroyShaderModule(m_handle);
 }

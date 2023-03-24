@@ -9,16 +9,14 @@ MultiSampler_RenderTarget::MultiSampler_RenderTarget(
     std::shared_ptr<Image> image, vk::AttachmentDescription des)
     : RenderTarget(image, des)
 {
-   
+
     clear_color.setColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 }
 std::unique_ptr<MultiSampler_RenderTarget> MultiSampler_RenderTarget::Create()
 {
 
-
-
-    auto sampler_count = Context::Get_Singleton().Get_Device()->Get_sampler_count();
-    auto swapchain_format = Context::Get_Singleton().Get_SwapChain()->Get_Format();
+    auto sampler_count = Context::Get_Singleton()->Get_Device()->Get_sampler_count();
+    auto swapchain_format = Context::Get_Singleton()->Get_SwapChain()->Get_Format();
     std::shared_ptr<Image> image {
         new Image(800, 800, swapchain_format, vk::ImageType::e2D,
             vk::ImageTiling::eOptimal,

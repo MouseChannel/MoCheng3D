@@ -8,7 +8,7 @@ class Buffer;
 class DescriptorPool;
 class DescriptorSet;
 class Image;
-class Descriptor_Manager {
+class Descriptor_Manager : public Instance_base<Descriptor_Manager> {
 
     struct DescriptorSet_Buffer_Binding {
         std::shared_ptr<Buffer> buffer;
@@ -27,8 +27,7 @@ public:
     ~Descriptor_Manager();
     static std::unique_ptr<Descriptor_Manager> _instance;
 
-    static Descriptor_Manager& Get_Singleton();
-   
+    // static Descriptor_Manager& Get_Singleton();
 
     void Make_DescriptorSet(std::shared_ptr<Buffer> data,
         uint32_t binding_index, vk::DescriptorType type,
@@ -42,6 +41,7 @@ public:
         return descriptorSet;
     }
     [[nodiscard("missing descriptorPool")]] auto& get_descriptorpool() { return descriptorPool; }
+    
 
 private:
     [[nodiscard]] std::vector<vk::DescriptorSetLayoutBinding>& Get_layout_bindings();

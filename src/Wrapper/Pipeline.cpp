@@ -12,8 +12,8 @@ Pipeline::Pipeline()
 }
 Pipeline::~Pipeline()
 {
-    Get_Context_Singleton().Get_Device()->Get_handle().destroyPipelineLayout(layout);
-    Get_Context_Singleton().Get_Device()->Get_handle().destroyPipeline(m_handle);
+    Get_Context_Singleton()->Get_Device()->Get_handle().destroyPipelineLayout(layout);
+    Get_Context_Singleton()->Get_Device()->Get_handle().destroyPipeline(m_handle);
 }
 void Pipeline::Build_Pipeline(std::shared_ptr<RenderPass> render_pass)
 {
@@ -33,7 +33,7 @@ void Pipeline::Build_Pipeline(std::shared_ptr<RenderPass> render_pass)
         .setPMultisampleState(&multi_sample)
         .setPDepthStencilState(&depth_test)
         .setPColorBlendState(&blend);
-    auto res = Get_Context_Singleton().Get_Device()->Get_handle().createGraphicsPipeline(nullptr, create_info);
+    auto res = Get_Context_Singleton()->Get_Device()->Get_handle().createGraphicsPipeline(nullptr, create_info);
     m_handle = res.value;
 }
 void Pipeline::Make_Layout(vk::DescriptorSetLayout descriptor_layout,
@@ -46,7 +46,7 @@ void Pipeline::Make_Layout(vk::DescriptorSetLayout descriptor_layout,
     createInfo.setSetLayouts(descriptor_layout).setPushConstantRanges(range);
     layout
         = Get_Context_Singleton()
-              .Get_Device()
+              ->Get_Device()
               ->Get_handle()
               .createPipelineLayout(createInfo);
     // layout = pipeline_layout;
@@ -63,7 +63,7 @@ void Pipeline::Make_VertexAssembly()
 
 void Pipeline::Make_viewPort()
 {
-    auto extent2D = Get_Context_Singleton().Get_SwapChain()->Get_Extent2D();
+    auto extent2D = Get_Context_Singleton()->Get_SwapChain()->Get_Extent2D();
     viewport.setX(0).setY(0).setHeight(extent2D.height).setWidth(extent2D.width).setMinDepth(0).setMaxDepth(1);
 
     scissor.setExtent(extent2D).setOffset(vk::Offset2D { 0, 0 });
@@ -85,7 +85,7 @@ void Pipeline::Make_Resterization()
 }
 void Pipeline::Make_MultiSample()
 {
-    multi_sample.setSampleShadingEnable(false).setRasterizationSamples(Context::Get_Singleton().Get_Device()->Get_sampler_count());
+    multi_sample.setSampleShadingEnable(false).setRasterizationSamples(Context::Get_Singleton()->Get_Device()->Get_sampler_count());
 }
 void Pipeline::Make_DepthTest()
 {

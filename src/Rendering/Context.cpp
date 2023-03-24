@@ -36,15 +36,11 @@ namespace MoCheng3D {
 
 const std::array<Uniform, 1> color_data { { 0, 0, 1 } };
 
-std::unique_ptr<Context> Context::_instance = nullptr;
-void Context::Init()
-{
-    _instance.reset(new Context);
-}
+ 
 void Context::Quit()
 {
 
-    Descriptor_Manager::_instance.reset();
+    Descriptor_Manager::Get_Singleton().reset();
     _instance->device->Get_handle().waitIdle();
 
     _instance->model.reset();
@@ -70,13 +66,8 @@ void Context::Quit()
     _instance.reset();
 }
 
+Context::Context() { }
 Context::~Context() { }
-Context& Context::Get_Singleton()
-{
-
-    assert(_instance);
-    return *_instance;
-}
 
 void Context::Init_Vulkan(std::shared_ptr<Window> window)
 {
@@ -123,7 +114,7 @@ void Context::Build_pipeline()
     pipeline->Add_Shader_Modules(vert_shader->Get_handle(), vk::ShaderStageFlagBits::eVertex);
     pipeline->Add_Shader_Modules(frag_shader->Get_handle(), vk::ShaderStageFlagBits::eFragment);
 
-    pipeline->Make_Layout(Descriptor_Manager::Get_Singleton().Get_DescriptorSet_layout(), sizeof(glm::mat4), vk::ShaderStageFlagBits::eVertex);
+    pipeline->Make_Layout(Descriptor_Manager::Get_Singleton()->Get_DescriptorSet_layout(), sizeof(glm::mat4), vk::ShaderStageFlagBits::eVertex);
     pipeline->Make_VertexInput(binding, attr);
     pipeline->Make_VertexAssembly();
     pipeline->Make_viewPort();
@@ -150,16 +141,16 @@ void Context::CreateUniformBuffer()
 }
 void Context::CreateDescriptorSet()
 {
-    Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
+    Descriptor_Manager::Get_Singleton()->Make_DescriptorSet(
         uniform_mvp_buffer, 0, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex);
-    Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
+    Descriptor_Manager::Get_Singleton()->Make_DescriptorSet(
         uniform_color_buffer, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eFragment);
-    Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
+    Descriptor_Manager::Get_Singleton()->Make_DescriptorSet(
         model->get_texture()->GetImage(), 2, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment);
 
-    Descriptor_Manager::Get_Singleton().CreateDescriptorPool();
+    Descriptor_Manager::Get_Singleton()->CreateDescriptorPool();
 
-    Descriptor_Manager::Get_Singleton().CreateUpdateDescriptorSet();
+    Descriptor_Manager::Get_Singleton()->CreateUpdateDescriptorSet();
 }
 std::shared_ptr<RenderPass> Context::Get_RenderPass()
 {
@@ -177,7 +168,7 @@ std::shared_ptr<CommandBuffer> Context::BeginFrame()
 
         cmd->BindDescriptorSet(
             pipeline->GetLayout(),
-            Descriptor_Manager::Get_Singleton().Get_DescriptorSet()->Get_handle()[render_context->Get_cur_index()]);
+            Descriptor_Manager::Get_Singleton()->Get_DescriptorSet()->Get_handle()[render_context->Get_cur_index()]);
 
         cmd->PushContants(pipeline->GetLayout(),
             vk::ShaderStageFlagBits::eVertex,

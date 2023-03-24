@@ -14,10 +14,10 @@ Final_RenderTarget::Final_RenderTarget(std::shared_ptr<Image> image,
 std::unique_ptr<Final_RenderTarget> Final_RenderTarget::Create(std::shared_ptr<Image> image)
 {
 
-    auto swapchain_format = Context::Get_Singleton().Get_SwapChain()->Get_Format();
+    auto swapchain_format = Context::Get_Singleton()->Get_SwapChain()->Get_Format();
 
     vk::AttachmentDescription des;
-    // auto la = Context::Get_Singleton().Get_SwapChain()->Get_handle().
+    // auto la = Context::Get_Singleton()->Get_SwapChain()->Get_handle().
 
     des.setFormat(swapchain_format)
         .setSamples(vk::SampleCountFlagBits::e1)

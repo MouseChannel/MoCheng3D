@@ -10,12 +10,12 @@ CommandBuffer::CommandBuffer()
 
     vk::CommandBufferAllocateInfo allocate_info;
 
-    auto command_pool = Get_Context_Singleton().Get_CommandPool();
+    auto command_pool = Get_Context_Singleton()->Get_CommandPool();
     allocate_info.setCommandBufferCount(1)
         .setLevel(vk::CommandBufferLevel::ePrimary)
         .setCommandPool(command_pool->Get_handle());
 
-    m_handle = Get_Context_Singleton().Get_Device()->Get_handle().allocateCommandBuffers(allocate_info)[0];
+    m_handle = Get_Context_Singleton()->Get_Device()->Get_handle().allocateCommandBuffers(allocate_info)[0];
 }
 void CommandBuffer::Begin(vk::CommandBufferUsageFlags begin_flags)
 {
@@ -94,8 +94,8 @@ void CommandBuffer::Push_Constants(
 
 CommandBuffer::~CommandBuffer()
 {
-    auto command_pool = Get_Context_Singleton().Get_CommandPool();
-    Get_Context_Singleton().Get_Device()->Get_handle().freeCommandBuffers(command_pool->Get_handle(), m_handle);
+    auto command_pool = Get_Context_Singleton()->Get_CommandPool();
+    Get_Context_Singleton()->Get_Device()->Get_handle().freeCommandBuffers(command_pool->Get_handle(), m_handle);
 }
 
 } // namespace MoCheng3D

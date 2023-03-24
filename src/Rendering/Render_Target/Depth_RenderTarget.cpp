@@ -13,15 +13,15 @@ Depth_RenderTarget::Depth_RenderTarget(std::shared_ptr<Image> image,
 std::unique_ptr<Depth_RenderTarget> Depth_RenderTarget::Create()
 {
 
-    auto sampler_count = Context::Get_Singleton().Get_Device()->Get_sampler_count();
-    auto depth_format = Context::Get_Singleton().Get_Device()->Get_supported_format(
+    auto sampler_count = Context::Get_Singleton()->Get_Device()->Get_sampler_count();
+    auto depth_format = Context::Get_Singleton()->Get_Device()->Get_supported_format(
         { vk::Format::eD32Sfloat, vk::Format::eD32SfloatS8Uint,
             vk::Format::eD24UnormS8Uint },
         vk::ImageTiling::eOptimal,
         vk::FormatFeatureFlagBits::eDepthStencilAttachment);
 
     vk::AttachmentDescription des;
- 
+
     des.setFormat(depth_format)
         .setSamples(sampler_count)
         .setLoadOp(vk::AttachmentLoadOp ::eClear)
@@ -31,10 +31,10 @@ std::unique_ptr<Depth_RenderTarget> Depth_RenderTarget::Create()
         .setInitialLayout(vk::ImageLayout ::eUndefined)
         .setFinalLayout(vk::ImageLayout ::eDepthStencilAttachmentOptimal);
 
-    std::shared_ptr<Image> image{new Image(
+    std::shared_ptr<Image> image { new Image(
         800, 800, depth_format, vk::ImageType::e2D, vk::ImageTiling::eOptimal,
         vk::ImageUsageFlagBits::eDepthStencilAttachment,
-        vk::ImageAspectFlagBits::eDepth, sampler_count)};
+        vk::ImageAspectFlagBits::eDepth, sampler_count) };
 
     image->SetImageLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal,
         vk::AccessFlagBits::eNone,

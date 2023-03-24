@@ -7,7 +7,7 @@ Fence::Fence()
     vk::FenceCreateInfo create_info;
 
     m_handle = Get_Context_Singleton()
-                   .Get_Device()
+                   ->Get_Device()
                    ->Get_handle()
                    .createFence(
                        create_info);
@@ -15,7 +15,7 @@ Fence::Fence()
 Fence::~Fence()
 {
     Get_Context_Singleton()
-        .Get_Device()
+        ->Get_Device()
         ->Get_handle()
         .destroyFence(m_handle);
 }

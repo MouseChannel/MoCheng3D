@@ -6,7 +6,7 @@ namespace MoCheng3D {
 
 DescriptorPool::DescriptorPool(std::vector<std::tuple<vk::DescriptorType, uint32_t>> type_size)
 {
-    auto swapchain_size = Get_Context_Singleton().Get_SwapChain()->Get_Swapchain_Image_size();
+    auto swapchain_size = Get_Context_Singleton()->Get_SwapChain()->Get_Swapchain_Image_size();
     std::vector<vk::DescriptorPoolSize> pool_size(type_size.size());
     for (int i = 0; i < type_size.size(); i++) {
         auto type = std::get<0>(type_size[i]);
@@ -20,7 +20,7 @@ DescriptorPool::DescriptorPool(std::vector<std::tuple<vk::DescriptorType, uint32
     create_info.setPoolSizes(pool_size)
         .setMaxSets(swapchain_size);
     m_handle = Get_Context_Singleton()
-                   .Get_Device()
+                   ->Get_Device()
                    ->Get_handle()
                    .createDescriptorPool(create_info);
 }
@@ -28,9 +28,9 @@ DescriptorPool::DescriptorPool(std::vector<std::tuple<vk::DescriptorType, uint32
 DescriptorPool::~DescriptorPool()
 {
     Get_Context_Singleton()
-        .Get_Device()
+        ->Get_Device()
         ->Get_handle()
         .destroyDescriptorPool(m_handle);
 }
- 
+
 } // namespace MoCheng3D

@@ -32,7 +32,7 @@ public:
     {
         assert(m_handle);
         if (swapchain_Image_handles.empty()) {
-            swapchain_Image_handles = Get_Context_Singleton().Get_Device()->Get_handle().getSwapchainImagesKHR(m_handle);
+            swapchain_Image_handles = Get_Context_Singleton()->Get_Device()->Get_handle().getSwapchainImagesKHR(m_handle);
         }
         return swapchain_Image_handles;
     }

@@ -11,7 +11,7 @@ CommandPool::CommandPool()
     create_info.setFlags(vk::CommandPoolCreateFlagBits::eResetCommandBuffer);
 
     m_handle = Get_Context_Singleton()
-                   .Get_Device()
+                   ->Get_Device()
                    ->Get_handle()
                    .createCommandPool(
                        create_info);
@@ -19,7 +19,7 @@ CommandPool::CommandPool()
 CommandPool::~CommandPool()
 {
     Context::Get_Singleton()
-        .Get_Device()
+        ->Get_Device()
         ->Get_handle()
         .destroyCommandPool(m_handle);
 }

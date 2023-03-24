@@ -6,16 +6,15 @@
 #include <tuple>
 
 namespace MoCheng3D {
-std::unique_ptr<Descriptor_Manager> Descriptor_Manager::_instance = nullptr;
-Descriptor_Manager& Descriptor_Manager::Get_Singleton()
-{
-    if (_instance == nullptr) {
-        _instance.reset(new Descriptor_Manager);
-    }
-    return *_instance;
-}
+// std::unique_ptr<Descriptor_Manager> Descriptor_Manager::_instance = nullptr;
+// Descriptor_Manager& Descriptor_Manager::Get_Singleton()
+// {
+//     if (_instance == nullptr) {
+//         _instance.reset(new Descriptor_Manager);
+//     }
+//     return *_instance;
+// }
 
- 
 void Descriptor_Manager::Make_DescriptorSet(std::shared_ptr<Buffer> data, uint32_t binding_index, vk::DescriptorType type, vk::ShaderStageFlags shader_stage)
 {
     vk::DescriptorSetLayoutBinding binding;
@@ -73,7 +72,7 @@ vk::DescriptorSetLayout& Descriptor_Manager::Get_DescriptorSet_layout()
     if (!descriptor_layout) {
         vk::DescriptorSetLayoutCreateInfo layout_create_info;
         layout_create_info.setBindings(Get_layout_bindings());
-        descriptor_layout = Context::Get_Singleton().Get_Device()->Get_handle().createDescriptorSetLayout(layout_create_info);
+        descriptor_layout = Context::Get_Singleton()->Get_Device()->Get_handle().createDescriptorSetLayout(layout_create_info);
     }
     return descriptor_layout;
 }
@@ -91,11 +90,16 @@ void Descriptor_Manager::CreateUpdateDescriptorSet()
         descriptorSet->Update(image, binding.binding, binding.descriptorType);
     }
 }
+// void Descriptor_Manager::Quit()
+// {
+
+// }
 Descriptor_Manager::~Descriptor_Manager()
 {
     layout_bindings.clear();
     descriptorSet.reset();
-    Context::Get_Singleton().Get_Device()->Get_handle().destroyDescriptorSetLayout(Get_DescriptorSet_layout());
+    auto& de = Context::Get_Singleton();
+    Context::Get_Singleton()->Get_Device()->Get_handle().destroyDescriptorSetLayout(Get_DescriptorSet_layout());
 
     descriptorSet_buffer_binding_map.clear();
     descriptorSet_image_binding_map.clear();

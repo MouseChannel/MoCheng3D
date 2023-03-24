@@ -6,9 +6,9 @@ namespace MoCheng3D {
 Framebuffer::Framebuffer(std::vector<std::shared_ptr<Image>> images)
 {
 
-    auto render_pass = Get_Context_Singleton().Get_RenderPass();
-    auto h = Get_Context_Singleton().Get_SwapChain()->Get_Extent2D().height;
-    auto w = Get_Context_Singleton().Get_SwapChain()->Get_Extent2D().width;
+    auto render_pass = Get_Context_Singleton()->Get_RenderPass();
+    auto h = Get_Context_Singleton()->Get_SwapChain()->Get_Extent2D().height;
+    auto w = Get_Context_Singleton()->Get_SwapChain()->Get_Extent2D().width;
 
     vk::FramebufferCreateInfo create_info;
     std::vector<vk::ImageView> image_views;
@@ -21,13 +21,13 @@ Framebuffer::Framebuffer(std::vector<std::shared_ptr<Image>> images)
         .setHeight(h)
         .setWidth(w)
         .setLayers(1);
-    m_handle = Get_Context_Singleton().Get_Device()->Get_handle().createFramebuffer(
+    m_handle = Get_Context_Singleton()->Get_Device()->Get_handle().createFramebuffer(
         create_info);
 }
 Framebuffer::~Framebuffer()
 {
     Context::Get_Singleton()
-        .Get_Device()
+        ->Get_Device()
         ->Get_handle()
         .destroyFramebuffer(m_handle);
 }

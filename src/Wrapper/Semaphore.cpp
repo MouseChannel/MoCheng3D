@@ -5,7 +5,7 @@ Semaphore::Semaphore()
 {
     vk::SemaphoreCreateInfo create_info;
     m_handle = Get_Context_Singleton()
-                   .Get_Device()
+                   ->Get_Device()
                    ->Get_handle()
                    .createSemaphore(
                        create_info);
@@ -13,7 +13,7 @@ Semaphore::Semaphore()
 Semaphore::~Semaphore()
 {
     Get_Context_Singleton()
-        .Get_Device()
+        ->Get_Device()
         ->Get_handle()
         .destroySemaphore(m_handle);
 }

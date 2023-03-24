@@ -14,10 +14,10 @@ SwapChain::SwapChain()
 {
     Query_info();
     vk::SwapchainCreateInfoKHR createInfo;
-    auto surface = Get_Context_Singleton().Get_Surface();
-    auto graphic_queue_index = Get_Context_Singleton().Get_Device()->queue_family_indices.graphic_queue.value();
+    auto surface = Get_Context_Singleton()->Get_Surface();
+    auto graphic_queue_index = Get_Context_Singleton()->Get_Device()->queue_family_indices.graphic_queue.value();
 
-    auto present_queue_index = Get_Context_Singleton().Get_Device()->queue_family_indices.present_queue.value();
+    auto present_queue_index = Get_Context_Singleton()->Get_Device()->queue_family_indices.present_queue.value();
 
     auto share_mode = graphic_queue_index == present_queue_index ? vk::SharingMode::eExclusive : vk::SharingMode::eConcurrent;
 
@@ -39,12 +39,12 @@ SwapChain::SwapChain()
         .setSurface(surface->Get_handle())
         .setQueueFamilyIndices(queue_family_index_v)
         .setImageSharingMode(share_mode);
-    m_handle = Get_Context_Singleton().Get_Device()->Get_handle().createSwapchainKHR(createInfo);
+    m_handle = Get_Context_Singleton()->Get_Device()->Get_handle().createSwapchainKHR(createInfo);
 }
 SwapChain::~SwapChain()
 {
     Get_Context_Singleton()
-        .Get_Device()
+        ->Get_Device()
         ->Get_handle()
         .destroySwapchainKHR(m_handle);
 }
@@ -52,8 +52,8 @@ SwapChain::~SwapChain()
 void SwapChain::Query_info()
 {
     surfaceInfo.format = Query_surface_Format();
-    auto surface = Get_Context_Singleton().Get_Surface();
-    auto capability = Get_Context_Singleton().Get_Device()->Get_Physical_device().getSurfaceCapabilitiesKHR(surface->Get_handle());
+    auto surface = Get_Context_Singleton()->Get_Surface();
+    auto capability = Get_Context_Singleton()->Get_Device()->Get_Physical_device().getSurfaceCapabilitiesKHR(surface->Get_handle());
     //   capability.maxImageCount = 3;
 
     //   capability.minImageCount = 1;
@@ -81,8 +81,8 @@ vk::Extent2D SwapChain::Query_surface_Extent(const vk::SurfaceCapabilitiesKHR& c
 }
 vk::SurfaceFormatKHR SwapChain::Query_surface_Format()
 {
-    auto physical_device = Get_Context_Singleton().Get_Device()->Get_Physical_device();
-    auto surface = Get_Context_Singleton().Get_Surface();
+    auto physical_device = Get_Context_Singleton()->Get_Device()->Get_Physical_device();
+    auto surface = Get_Context_Singleton()->Get_Surface();
     auto available_format = physical_device.getSurfaceFormatsKHR(surface->Get_handle());
     for (auto& format : available_format) {
         if (format.format == vk::Format::eR8G8B8A8Srgb && format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear) {

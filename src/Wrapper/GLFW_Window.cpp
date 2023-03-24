@@ -19,10 +19,7 @@ Window::Window(int width, int height)
 
 Window::~Window()
 {
-    // Context::Get_Singleton()
-    //     .Get_Instance()
-    //     ->Get_handle()
-    //     .destroySurfaceKHR(surface);
+
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -56,10 +53,10 @@ std::vector<int> Window::WindowUpdate()
 }
 void Window::CreateWindowSurface()
 {
-    // auto& instance = Context::Get_Singleton().Get_Instance();
+    // auto& instance = Context::Get_Singleton()->Get_Instance();
 
     // VK_CHECK_SUCCESS(glfwCreateWindowSurface(instance->Get_handle(), window,
     //                      nullptr, (VkSurfaceKHR*)(&surface)),
-        // "Error: failed to create surface");
+    // "Error: failed to create surface");
 }
 } // namespace MoCheng3D

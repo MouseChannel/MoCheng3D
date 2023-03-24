@@ -6,11 +6,13 @@
 #include <vulkan/vulkan.hpp>
 
 namespace MoCheng3D {
+
 class Buffer;
+class Texture;
 class Model {
 
 public:
-    Model(std::string_view path);
+    Model(std::string_view model_path, std::string_view texture_path);
     ~Model() = default;
     [[nodiscard("missing attr")]] auto& Get_Attr() { return vertex_attrs; }
     [[nodiscard("missing binding")]] auto& Get_Binding()
@@ -22,11 +24,12 @@ public:
     {
         return m_index_buffer;
     }
-    [[nodiscard("missing uv_buffer")]] auto Get_uv_buffer()
-    {
-        return m_uv_buffer;
-    }
-    [[nodiscard("missing position_buffer")]] auto Get_position_buffer() { return m_position_buffer; }
+    [[nodiscard("Missing Texture")]] auto get_texture() { return texture; }
+    // [[nodiscard("missing uv_buffer")]] auto Get_uv_buffer()
+    // {
+    //     return m_uv_buffer;
+    // }
+    // [[nodiscard("missing position_buffer")]] auto Get_position_buffer() { return m_position_buffer; }
 
     [[nodiscard]] auto Get_vertex_buffer()
     {
@@ -40,6 +43,9 @@ public:
     void Update();
 
 private:
+    void Load_Model(std::string_view model_path);
+    void Load_texture(std::string_view texture_path);
+    std::shared_ptr<Texture> texture;
     std::shared_ptr<Buffer> m_position_buffer;
 
     std::shared_ptr<Buffer> m_uv_buffer;

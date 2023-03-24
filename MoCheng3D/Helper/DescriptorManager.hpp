@@ -28,6 +28,7 @@ public:
     static std::unique_ptr<Descriptor_Manager> _instance;
 
     static Descriptor_Manager& Get_Singleton();
+   
 
     void Make_DescriptorSet(std::shared_ptr<Buffer> data,
         uint32_t binding_index, vk::DescriptorType type,

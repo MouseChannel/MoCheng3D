@@ -19,7 +19,7 @@ void RenderPass::Build()
     // vk::VK_SUBPASS_EXTERNAL
     subpass_dependency.setSrcSubpass(VK_SUBPASS_EXTERNAL)
         .setDstSubpass(0)
-        .setSrcStageMask(vk::PipelineStageFlagBits::eLateFragmentTests | vk::PipelineStageFlagBits::eColorAttachmentOutput)
+        .setSrcStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput)
         .setDstStageMask(vk::PipelineStageFlagBits::eEarlyFragmentTests | vk::PipelineStageFlagBits::eColorAttachmentOutput)
         .setDstAccessMask(vk::AccessFlagBits::eDepthStencilAttachmentWrite | vk::AccessFlagBits::eColorAttachmentWrite);
 

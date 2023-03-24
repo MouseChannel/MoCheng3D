@@ -20,7 +20,7 @@
 #include "MoCheng3D/Wrapper/ShaderModule.hpp"
 #include "MoCheng3D/Wrapper/SwapChain.hpp"
 #include "MoCheng3D/Wrapper/Uniform.hpp"
-#include "MoCheng3D/Wrapper/Vertex.hpp"
+
 #include "MoCheng3D/Wrapper/Window_Surface.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -33,23 +33,9 @@
 #include "MoCheng3D/Rendering/Texture.hpp"
 
 namespace MoCheng3D {
-const std::array<Vertex, 4> vertices = {
-    Vertex { { -0.5, -0.5 }, { 0, 0 } },
-    Vertex { { 0.5, -0.5 }, { 1, 0 } },
-    Vertex { { 0.5, 0.5 }, { 1, 1 } },
-    Vertex { { -0.5, 0.5 }, { 0, 1 } },
-};
-const std::array<uint32_t, 6> indices = {
-    0,
-    1,
-    3,
-    1,
-    2,
-    3,
-};
-// const std::array<Mat4, 2> project_view_data;
+
 const std::array<Uniform, 1> color_data { { 0, 0, 1 } };
-const Uniform color_data1 { Color { 0, 0, 1 } };
+
 std::unique_ptr<Context> Context::_instance = nullptr;
 void Context::Init()
 {
@@ -63,13 +49,12 @@ void Context::Quit()
 
     _instance->model.reset();
     _instance->render_context.reset();
-    _instance->texture.reset();
+
     _instance->sampler.reset();
 
     _instance->uniform_color_buffer.reset();
     _instance->uniform_mvp_buffer.reset();
-    _instance->indice_buffer.reset();
-    _instance->vertex_buffers.clear();
+
     _instance->command_buffer.reset();
     _instance->command_pool.reset();
     _instance->render_pass.reset();
@@ -80,7 +65,6 @@ void Context::Quit()
     _instance->m_surface.reset();
     _instance->m_window.reset();
 
-    _instance->Get_Device()->Get_handle().destroyDescriptorSetLayout(_instance->descriptor_layout);
     _instance->device.reset();
     _instance->instance.reset();
     _instance.reset();
@@ -104,19 +88,18 @@ void Context::Init_Vulkan(std::shared_ptr<Window> window)
 
     // create command_buffer
     command_pool.reset(new CommandPool);
-    model.reset(new Model("D:/MoCheng3D/assets/model.obj"));
+    model.reset(new Model("D:/MoCheng3D/assets/model.obj", "D:/MoCheng3D/assets/model.png"));
 
     command_buffer.reset(new CommandBuffer);
     swapchain.reset(new SwapChain);
     render_pass.reset(new RenderPass);
 
-    texture.reset(new Texture("D:/MoCheng3D/assets/model.png"));
+    // texture.reset(new Texture("D:/MoCheng3D/assets/model.png"));
     sampler.reset(new Sampler());
 
     CreateUniformBuffer();
-    CreateVertexBuffer();
 
-    CreatePipelineLayout();
+    // CreatePipelineLayout();
     CreateDescriptorSet();
 
     render_context.reset(new RenderContext(device));
@@ -136,12 +119,11 @@ void Context::Build_pipeline()
     // auto binding = Vertex::Get_Binding();
     auto attr = model->Get_Attr();
     auto binding = model->Get_Binding();
-    vk::PipelineVertexInputStateCreateInfo vertex_input_create_info;
-    vertex_input_create_info.setVertexBindingDescriptions(binding).setVertexAttributeDescriptions(attr);
+
     pipeline->Add_Shader_Modules(vert_shader->Get_handle(), vk::ShaderStageFlagBits::eVertex);
     pipeline->Add_Shader_Modules(frag_shader->Get_handle(), vk::ShaderStageFlagBits::eFragment);
 
-    pipeline->Make_Layout(pipeline_layout);
+    pipeline->Make_Layout(Descriptor_Manager::Get_Singleton().Get_DescriptorSet_layout(), sizeof(glm::mat4), vk::ShaderStageFlagBits::eVertex);
     pipeline->Make_VertexInput(binding, attr);
     pipeline->Make_VertexAssembly();
     pipeline->Make_viewPort();
@@ -154,48 +136,26 @@ void Context::Build_pipeline()
     pipeline->Build_Pipeline(Get_RenderPass());
 }
 
-void Context::CreateVertexBuffer()
-{
-
-    indice_buffer = model->Get_index_buffer();
-    vertex_buffers = model->Get_vertex_buffer();
-}
 void Context::CreateUniformBuffer()
 {
 
-#ifdef using_glm
-    project_view_matrix[0] = project_matrix;
-    project_view_matrix[1] = view_matrix;
-
-    project_view_matrix[2] = m_Matrix;
-    //
     project_view_matrix[0] = camera->Get_p_matrix();
     project_view_matrix[1] = camera->Get_v_matrix();
-
-    project_view_matrix[2] = m_Matrix;
-
-    // project_view_matrix[0] = camera->Get_p_matrix();
-    // project_view_matrix[1] = camera->Get_v_matrix();
-    // project_view_matrix[2] = model->Get_m_matrix();
+    project_view_matrix[2] = model->Get_m_matrix();
     uniform_mvp_buffer = Buffer::CreateDeviceBuffer(
         (void*)project_view_matrix.data(), sizeof(project_view_matrix), vk::BufferUsageFlagBits::eUniformBuffer);
 
-#else
-
-    project_view_data[0] = m_project_matrix;
-    project_view_data[1] = m_view_matrix;
-
-    auto model = Mat4::CreateTranslate(drawed_rect.pos).Mul(Mat4::CreateScale(drawed_rect.size));
-    project_view_data[2] = model;
-    uniform_mvp_buffer = Buffer::CreateDeviceBuffer(
-        (void*)project_view_data.data(), sizeof(project_view_data), vk::BufferUsageFlagBits::eUniformBuffer);
-
-#endif
     uniform_color_buffer = Buffer::CreateDeviceBuffer(
         (void*)color_data.data(), sizeof(color_data), vk::BufferUsageFlagBits::eUniformBuffer);
 }
 void Context::CreateDescriptorSet()
 {
+    Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
+        uniform_mvp_buffer, 0, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex);
+    Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
+        uniform_color_buffer, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eFragment);
+    Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
+        model->get_texture()->GetImage(), 2, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment);
 
     Descriptor_Manager::Get_Singleton().CreateDescriptorPool();
 
@@ -219,14 +179,14 @@ std::shared_ptr<CommandBuffer> Context::BeginFrame()
             pipeline->GetLayout(),
             Descriptor_Manager::Get_Singleton().Get_DescriptorSet()->Get_handle()[render_context->Get_cur_index()]);
 
-        cmd->PushContants(pipeline_layout,
+        cmd->PushContants(pipeline->GetLayout(),
             vk::ShaderStageFlagBits::eVertex,
             0,
             sizeof(model->Get_m_matrix()),
             (void*)&model->Get_m_matrix());
 
-        cmd->BindVertexBuffer(0, vertex_buffers, 0);
-        cmd->BindIndicesBuffer(indice_buffer, 0, vk::IndexType::eUint32);
+        cmd->BindVertexBuffer(0, model->Get_vertex_buffer(), 0);
+        cmd->BindIndicesBuffer(model->Get_index_buffer(), 0, vk::IndexType::eUint32);
         cmd->DrawIndex(model->Get_index(), 1, 0, 0, 0);
     }
     return cmd;
@@ -237,30 +197,4 @@ void Context::EndFrame()
     render_context->EndFrame();
 }
 
-void Context::CreatePipelineLayout()
-{
-
-    Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
-        uniform_mvp_buffer, 0, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eVertex);
-    Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
-        uniform_color_buffer, 1, vk::DescriptorType::eUniformBuffer, vk::ShaderStageFlagBits::eFragment);
-    Descriptor_Manager::Get_Singleton().Make_DescriptorSet(
-        texture->GetImage(), 2, vk::DescriptorType::eCombinedImageSampler, vk::ShaderStageFlagBits::eFragment);
-
-    descriptor_layout = Descriptor_Manager::Get_Singleton().Get_DescriptorSet_layout();
-    vk::PipelineLayoutCreateInfo pipeline_create_info;
-    vk::PushConstantRange push_constants_range;
-    push_constants_range.setOffset(0).setSize(sizeof(Mat4)).setStageFlags(vk::ShaderStageFlagBits::eVertex);
-    pipeline_create_info.setSetLayouts(descriptor_layout).setPushConstantRanges(push_constants_range);
-    pipeline_layout = Get_Device()->Get_handle().createPipelineLayout(pipeline_create_info);
-}
-void Context::ModelMatrixUpdate()
-{
-//  rotateMatrix = glm::mat4(1.0f);
-#ifdef using_glm
-    m_Matrix = glm::rotate(m_Matrix, glm::radians(mAngle), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    mAngle = 0.1f;
-#endif
-}
 } // namespace MoCheng3D

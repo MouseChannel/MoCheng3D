@@ -15,6 +15,7 @@ Descriptor_Manager& Descriptor_Manager::Get_Singleton()
     return *_instance;
 }
 
+ 
 void Descriptor_Manager::Make_DescriptorSet(std::shared_ptr<Buffer> data, uint32_t binding_index, vk::DescriptorType type, vk::ShaderStageFlags shader_stage)
 {
     vk::DescriptorSetLayoutBinding binding;
@@ -78,7 +79,7 @@ vk::DescriptorSetLayout& Descriptor_Manager::Get_DescriptorSet_layout()
 }
 void Descriptor_Manager::CreateUpdateDescriptorSet()
 {
-    descriptorSet.reset(new DescriptorSet(descriptorPool, descriptor_layout));
+    descriptorSet.reset(new DescriptorSet(descriptorPool, Get_DescriptorSet_layout()));
     for (auto& i : descriptorSet_buffer_binding_map) {
         auto binding = i.binding;
         auto buffer = i.buffer;
@@ -94,14 +95,8 @@ Descriptor_Manager::~Descriptor_Manager()
 {
     layout_bindings.clear();
     descriptorSet.reset();
+    Context::Get_Singleton().Get_Device()->Get_handle().destroyDescriptorSetLayout(Get_DescriptorSet_layout());
 
-    // for (auto& i : descriptorSet_buffer_binding_map) {
-    //     i.buffer.reset();
-    // }
-
-    // for (auto& i : descriptorSet_image_binding_map) {
-    //     i.image.reset();
-    // }
     descriptorSet_buffer_binding_map.clear();
     descriptorSet_image_binding_map.clear();
     descriptorPool.reset();

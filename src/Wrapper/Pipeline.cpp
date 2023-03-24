@@ -36,14 +36,20 @@ void Pipeline::Build_Pipeline(std::shared_ptr<RenderPass> render_pass)
     auto res = Get_Context_Singleton().Get_Device()->Get_handle().createGraphicsPipeline(nullptr, create_info);
     m_handle = res.value;
 }
-void Pipeline::Make_Layout(vk::PipelineLayout pipeline_layout)
+void Pipeline::Make_Layout(vk::DescriptorSetLayout descriptor_layout,
+    uint32_t push_constants_size,
+    vk::ShaderStageFlags push_constants_stage)
 {
-    //   vk::PipelineLayoutCreateInfo createInfo;
-    //   layout = Get_Context_Singleton ()
-    //                .Get_Device ()
-    //                ->Get_handle ()
-    //                .createPipelineLayout (createInfo);
-    layout = pipeline_layout;
+    vk::PushConstantRange range;
+    range.setOffset(0).setSize(push_constants_size).setStageFlags(push_constants_stage);
+    vk::PipelineLayoutCreateInfo createInfo;
+    createInfo.setSetLayouts(descriptor_layout).setPushConstantRanges(range);
+    layout
+        = Get_Context_Singleton()
+              .Get_Device()
+              ->Get_handle()
+              .createPipelineLayout(createInfo);
+    // layout = pipeline_layout;
 }
 void Pipeline::Make_VertexInput(vk::ArrayProxyNoTemporaries<const vk::VertexInputBindingDescription> const& bind,
     vk::ArrayProxyNoTemporaries<const vk::VertexInputAttributeDescription> const& attr)

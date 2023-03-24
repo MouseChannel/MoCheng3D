@@ -1,10 +1,16 @@
 #include "MoCheng3D/Rendering/Model.hpp"
+#include "MoCheng3D/Rendering/Texture.hpp"
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "MoCheng3D/Tool/tiny_obj_loader.hpp"
 #include "MoCheng3D/Wrapper/Buffer.hpp"
 namespace MoCheng3D {
 
-Model::Model(std::string_view path)
+Model::Model(std::string_view model_path, std::string_view texture_path)
+{
+    Load_Model(model_path);
+    Load_texture(texture_path);
+}
+void Model::Load_Model(std::string_view model_path)
 {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
@@ -12,7 +18,7 @@ Model::Model(std::string_view path)
     std::string err;
     std::string warn;
 
-    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.data())) {
+    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, model_path.data())) {
         throw std::runtime_error("Error: failed to load model");
     }
     std::vector<float> m_positions;
@@ -58,6 +64,10 @@ Model::Model(std::string_view path)
     vertex_attrs.push_back(vertex_position_attr);
 
     vertex_attrs.push_back(vertex_uv_attr);
+}
+void Model::Load_texture(std::string_view texture_path)
+{
+    texture.reset(new Texture(texture_path));
 }
 void Model::Update()
 {

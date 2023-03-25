@@ -42,10 +42,7 @@ void App::Run()
 App::~App()
 {
 
-    // Context::Get_Singleton()->Get_Device()->Get_handle().destroyDescriptorPool(descriptor_pool);
-    // ImGui_ImplVulkan_Shutdown();
-    // ImGui_ImplGlfw_Shutdown();
-    // ImGui::DestroyContext();
+    
     imgui.reset();
     Context::Get_Singleton()->Quit();
 }

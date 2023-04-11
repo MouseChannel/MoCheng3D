@@ -1,9 +1,9 @@
-#include "MoCheng3D/Wrapper/DescriptorSet.hpp"
-#include "MoCheng3D/Wrapper/Buffer.hpp"
-#include "MoCheng3D/Wrapper/DescriptorPool.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
-#include "MoCheng3D/Wrapper/Sampler.hpp"
-#include "MoCheng3D/Wrapper/SwapChain.hpp"
+#include "Wrapper/DescriptorSet.hpp"
+#include "Wrapper/Buffer.hpp"
+#include "Wrapper/DescriptorPool.hpp"
+#include "Wrapper/Device.hpp"
+#include "Wrapper/Sampler.hpp"
+#include "Wrapper/SwapChain.hpp"
 namespace MoCheng3D {
 DescriptorSet::DescriptorSet(std::shared_ptr<DescriptorPool> descriptorPool, vk::DescriptorSetLayout setLayouts)
 {

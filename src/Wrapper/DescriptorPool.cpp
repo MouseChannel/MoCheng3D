@@ -1,6 +1,6 @@
-#include "MoCheng3D/Wrapper/DescriptorPool.hpp"
-#include "MoCheng3D/Wrapper/DescriptorSet.hpp"
-#include "MoCheng3D/Wrapper/SwapChain.hpp"
+#include "Wrapper/DescriptorPool.hpp"
+#include "Wrapper/DescriptorSet.hpp"
+#include "Wrapper/SwapChain.hpp"
 
 namespace MoCheng3D {
 

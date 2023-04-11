@@ -1,6 +1,6 @@
-#include "MoCheng3D/Wrapper/SwapChain.hpp"
-#include "MoCheng3D/Rendering/Context.hpp"
-#include "MoCheng3D/Wrapper/Window_Surface.hpp"
+#include "Wrapper/SwapChain.hpp"
+#include "Rendering/Context.hpp"
+#include "Wrapper/Window_Surface.hpp"
 #include <array>
 #include <cstdint>
 #include <limits>

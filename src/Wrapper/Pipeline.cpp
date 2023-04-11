@@ -1,7 +1,7 @@
-#include "MoCheng3D/Wrapper/Pipeline.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
-#include "MoCheng3D/Wrapper/RenderPass.hpp"
-#include "MoCheng3D/Wrapper/SwapChain.hpp"
+#include "Wrapper/Pipeline.hpp"
+#include "Wrapper/Device.hpp"
+#include "Wrapper/RenderPass.hpp"
+#include "Wrapper/SwapChain.hpp"
 #include <vector>
 #include <vulkan/vulkan_enums.hpp>
 #include <vulkan/vulkan_handles.hpp>

@@ -1,8 +1,8 @@
-#include "MoCheng3D/Wrapper/Device.hpp"
-#include "MoCheng3D/Rendering/Context.hpp"
-#include "MoCheng3D/Rendering/GLFW_Window.hpp"
-#include "MoCheng3D/Wrapper/Instance.hpp"
-#include "MoCheng3D/Wrapper/Window_Surface.hpp"
+#include "Wrapper/Device.hpp"
+#include "Rendering/Context.hpp"
+#include "Rendering/GLFW_Window.hpp"
+#include "Wrapper/Instance.hpp"
+#include "Wrapper/Window_Surface.hpp"
 #include <cassert>
 #include <vulkan/vulkan_enums.hpp>
 #include <vulkan/vulkan_structs.hpp>
@@ -23,8 +23,9 @@ Device::Device()
     // temp.resize(count);
     // vkEnumerateDeviceExtensionProperties(physical_device, nullptr, &count,
     //     temp.data());
+    std::cout << "device extension: " << std::endl;
     for (auto& i : physical_device.enumerateDeviceExtensionProperties()) {
-        // std::cout << i.extensionName << std::endl;
+        std::cout << i.extensionName << std::endl;
     }
     assert(physical_device);
     QueryQueueFamilyIndices();

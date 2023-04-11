@@ -1,7 +1,7 @@
-#include "MoCheng3D/Rendering/Context.hpp"
-#include "MoCheng3D/Rendering/Render_Target/Depth_Render_Target.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
-#include "MoCheng3D/Wrapper/Image.hpp"
+#include "Rendering/Context.hpp"
+#include "Rendering/Render_Target/Depth_Render_Target.hpp"
+#include "Wrapper/Device.hpp"
+#include "Wrapper/Image.hpp"
 
 namespace MoCheng3D {
 Depth_RenderTarget::Depth_RenderTarget(std::shared_ptr<Image> image,

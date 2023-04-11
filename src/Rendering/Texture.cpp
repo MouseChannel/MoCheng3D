@@ -1,8 +1,8 @@
-#include "MoCheng3D/Rendering/Texture.hpp"
+#include "Rendering/Texture.hpp"
 #define STB_IMAGE_IMPLEMENTATION
-#include "MoCheng3D/Tool/stb_image.hpp"
-#include "MoCheng3D/Wrapper/Buffer.hpp"
-#include "MoCheng3D/Wrapper/Image.hpp"
+#include "Tool/stb_image.hpp"
+#include "Wrapper/Buffer.hpp"
+#include "Wrapper/Image.hpp"
 
 namespace MoCheng3D {
 
@@ -28,7 +28,7 @@ Texture::Texture(std::string_view file_name)
 
     image->FillImageData(size, pixels);
     image->SetImageLayout(
-        vk::ImageLayout::eShaderReadOnlyOptimal, vk::AccessFlagBits::eTransferWrite  ,
+        vk::ImageLayout::eShaderReadOnlyOptimal, vk::AccessFlagBits::eTransferWrite,
         vk::AccessFlagBits::eShaderRead, vk::PipelineStageFlagBits::eTransfer,
         vk::PipelineStageFlagBits::eFragmentShader);
     stbi_image_free(pixels);

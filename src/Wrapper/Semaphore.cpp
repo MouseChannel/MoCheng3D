@@ -1,5 +1,5 @@
-#include "MoCheng3D/Wrapper/Semaphore.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
+#include "Wrapper/Semaphore.hpp"
+#include "Wrapper/Device.hpp"
 namespace MoCheng3D {
 Semaphore::Semaphore()
 {

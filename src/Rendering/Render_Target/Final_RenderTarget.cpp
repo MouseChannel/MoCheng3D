@@ -1,8 +1,8 @@
-#include "MoCheng3D/Rendering/Render_Target/Final_RenderTarget.hpp"
-#include "MoCheng3D/Rendering/Context.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
-#include "MoCheng3D/Wrapper/Image.hpp"
-#include "MoCheng3D/Wrapper/SwapChain.hpp"
+#include "Rendering/Render_Target/Final_RenderTarget.hpp"
+#include "Rendering/Context.hpp"
+#include "Wrapper/Device.hpp"
+#include "Wrapper/Image.hpp"
+#include "Wrapper/SwapChain.hpp"
 
 namespace MoCheng3D {
 Final_RenderTarget::Final_RenderTarget(std::shared_ptr<Image> image,

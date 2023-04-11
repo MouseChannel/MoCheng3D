@@ -1,9 +1,9 @@
 
-#include "MoCheng3D/Wrapper/Buffer.hpp"
-#include "MoCheng3D/Helper/CommandManager.hpp"
-#include "MoCheng3D/Wrapper/CommandBuffer.hpp"
-#include "MoCheng3D/Wrapper/CommandPool.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
+#include "Wrapper/Buffer.hpp"
+#include "Helper/CommandManager.hpp"
+#include "Wrapper/CommandBuffer.hpp"
+#include "Wrapper/CommandPool.hpp"
+#include "Wrapper/Device.hpp"
 
 namespace MoCheng3D {
 Buffer::Buffer(size_t size,

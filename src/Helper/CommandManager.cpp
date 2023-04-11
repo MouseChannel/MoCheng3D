@@ -1,5 +1,5 @@
-#include "MoCheng3D/Helper/CommandManager.hpp"
-#include "MoCheng3D/Wrapper/CommandBuffer.hpp"
+#include "Helper/CommandManager.hpp"
+#include "Wrapper/CommandBuffer.hpp"
 
 namespace MoCheng3D {
 void CommandManager::ExecuteCmd(vk::Queue queue, RecordCmdFunc func)
@@ -11,7 +11,6 @@ void CommandManager::ExecuteCmd(vk::Queue queue, RecordCmdFunc func)
         func(cmd->Get_handle());
     cmd->End();
     submit_Cmd(queue, cmd);
-    
 }
 void CommandManager::submit_Cmd(vk::Queue queue,
     std::shared_ptr<CommandBuffer> cmd)

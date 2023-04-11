@@ -1,8 +1,8 @@
- 
+
 #include "Example/app.cpp"
-#include "MoCheng3D/Rendering/GLFW_Window.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
-#include "MoCheng3D/Wrapper/Instance.hpp"
+#include "Rendering/GLFW_Window.hpp"
+#include "Wrapper/Device.hpp"
+#include "Wrapper/Instance.hpp"
 // #include "SDL.h"
 #include <iostream>
 int main(int, char**)

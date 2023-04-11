@@ -1,7 +1,7 @@
-#include "MoCheng3D/Wrapper/Instance.hpp"
+#include "Wrapper/Instance.hpp"
 #include "GLFW/glfw3.h"
-#include "MoCheng3D/Wrapper/Base.hpp"
-#include "MoCheng3D/Wrapper/DebugUtil.hpp"
+#include "Wrapper/Base.hpp"
+#include "Wrapper/DebugUtil.hpp"
 #include <vulkan/vk_enum_string_helper.h>
 #include <vulkan/vulkan.hpp>
 #include <vulkan/vulkan_funcs.hpp>
@@ -57,7 +57,7 @@ void Instance::print_available_extensions()
     std::cout << "Available extensions:" << std::endl;
 
     for (const auto& extension : vk::enumerateInstanceExtensionProperties()) {
-        // std::cout << extension.extensionName << std::endl;
+        std::cout << extension.extensionName << std::endl;
     }
 }
 void Instance::Enable_vaildLayer()

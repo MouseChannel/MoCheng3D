@@ -1,8 +1,8 @@
-#include "MoCheng3D/Rendering/Context.hpp"
-#include "MoCheng3D/Rendering/Render_Target/MultiSampler_Render_Target.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
-#include "MoCheng3D/Wrapper/Image.hpp"
-#include "MoCheng3D/Wrapper/SwapChain.hpp"
+#include "Rendering/Context.hpp"
+#include "Rendering/Render_Target/MultiSampler_Render_Target.hpp"
+#include "Wrapper/Device.hpp"
+#include "Wrapper/Image.hpp"
+#include "Wrapper/SwapChain.hpp"
 
 namespace MoCheng3D {
 MultiSampler_RenderTarget::MultiSampler_RenderTarget(

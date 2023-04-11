@@ -1,7 +1,7 @@
-#include "MoCheng3D/Helper/DescriptorManager.hpp"
-#include "MoCheng3D/Wrapper/DescriptorPool.hpp"
-#include "MoCheng3D/Wrapper/DescriptorSet.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
+#include "Helper/DescriptorManager.hpp"
+#include "Wrapper/DescriptorPool.hpp"
+#include "Wrapper/DescriptorSet.hpp"
+#include "Wrapper/Device.hpp"
 #include <map>
 #include <tuple>
 

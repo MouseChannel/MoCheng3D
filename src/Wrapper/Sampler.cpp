@@ -1,5 +1,5 @@
-#include "MoCheng3D/Wrapper/Sampler.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
+#include "Wrapper/Sampler.hpp"
+#include "Wrapper/Device.hpp"
 namespace MoCheng3D {
 
 Sampler::Sampler()

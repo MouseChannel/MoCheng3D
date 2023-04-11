@@ -1,8 +1,8 @@
-#include "MoCheng3D/Rendering/Model.hpp"
-#include "MoCheng3D/Rendering/Texture.hpp"
+#include "Rendering/Model.hpp"
+#include "Rendering/Texture.hpp"
 #define TINYOBJLOADER_IMPLEMENTATION
-#include "MoCheng3D/Tool/tiny_obj_loader.hpp"
-#include "MoCheng3D/Wrapper/Buffer.hpp"
+#include "Tool/tiny_obj_loader.hpp"
+#include "Wrapper/Buffer.hpp"
 namespace MoCheng3D {
 
 Model::Model(std::string_view model_path, std::string_view texture_path)

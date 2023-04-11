@@ -1,7 +1,7 @@
-#include "MoCheng3D/Rendering/GLFW_Window.hpp"
-#include "MoCheng3D/Rendering/Context.hpp"
-#include "MoCheng3D/Wrapper/Base.hpp"
-#include "MoCheng3D/Wrapper/Instance.hpp"
+#include "Rendering/GLFW_Window.hpp"
+#include "Rendering/Context.hpp"
+#include "Wrapper/Base.hpp"
+#include "Wrapper/Instance.hpp"
 #include <GLFW/glfw3.h>
 #include <cstddef>
 #include <vulkan/vulkan.hpp>

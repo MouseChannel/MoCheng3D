@@ -1,9 +1,9 @@
-#include "MoCheng3D/Wrapper/Image.hpp"
-#include "MoCheng3D/Helper/CommandManager.hpp"
-#include "MoCheng3D/Rendering/Context.hpp"
-#include "MoCheng3D/Wrapper/Buffer.hpp"
-#include "MoCheng3D/Wrapper/CommandBuffer.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
+#include "Wrapper/Image.hpp"
+#include "Helper/CommandManager.hpp"
+#include "Rendering/Context.hpp"
+#include "Wrapper/Buffer.hpp"
+#include "Wrapper/CommandBuffer.hpp"
+#include "Wrapper/Device.hpp"
 namespace MoCheng3D {
 Image::Image(uint32_t width, uint32_t height, vk::Format format,
     vk::ImageType type, vk::ImageTiling tiling,

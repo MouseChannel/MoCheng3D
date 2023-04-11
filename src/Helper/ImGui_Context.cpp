@@ -1,12 +1,12 @@
-#include "MoCheng3D/Helper/ImGui_Context.hpp"
+#include "Helper/ImGui_Context.hpp"
 
-#include "MoCheng3D/Helper/CommandManager.hpp"
-#include "MoCheng3D/Rendering/GLFW_Window.hpp"
-#include "MoCheng3D/Wrapper/CommandBuffer.hpp"
-#include "MoCheng3D/Wrapper/DescriptorPool.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
-#include "MoCheng3D/Wrapper/RenderPass.hpp"
-#include "MoCheng3D/Wrapper/SwapChain.hpp"
+#include "Helper/CommandManager.hpp"
+#include "Rendering/GLFW_Window.hpp"
+#include "Wrapper/CommandBuffer.hpp"
+#include "Wrapper/DescriptorPool.hpp"
+#include "Wrapper/Device.hpp"
+#include "Wrapper/RenderPass.hpp"
+#include "Wrapper/SwapChain.hpp"
 
 namespace MoCheng3D {
 ImGuiContext::ImGuiContext() { }

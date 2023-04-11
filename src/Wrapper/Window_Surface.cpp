@@ -1,6 +1,6 @@
-#include "MoCheng3D/Wrapper/Window_Surface.hpp"
-#include "MoCheng3D/Rendering/GLFW_Window.hpp"
-#include "MoCheng3D/Wrapper/Instance.hpp"
+#include "Wrapper/Window_Surface.hpp"
+#include "Rendering/GLFW_Window.hpp"
+#include "Wrapper/Instance.hpp"
 
 namespace MoCheng3D {
 

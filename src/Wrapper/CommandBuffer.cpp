@@ -1,8 +1,8 @@
-#include "MoCheng3D/Wrapper/CommandBuffer.hpp"
-#include "MoCheng3D/Wrapper/Buffer.hpp"
-#include "MoCheng3D/Wrapper/CommandPool.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
-#include "MoCheng3D/Wrapper/Pipeline.hpp"
+#include "Wrapper/CommandBuffer.hpp"
+#include "Wrapper/Buffer.hpp"
+#include "Wrapper/CommandPool.hpp"
+#include "Wrapper/Device.hpp"
+#include "Wrapper/Pipeline.hpp"
 #include <vulkan/vulkan_handles.hpp>
 namespace MoCheng3D {
 CommandBuffer::CommandBuffer()

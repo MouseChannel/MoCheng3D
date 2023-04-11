@@ -6,9 +6,9 @@
  * @FilePath: \MYP\src\Wrapper\ShaderModule.cpp
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-#include "MoCheng3D/Wrapper/ShaderModule.hpp"
-#include "MoCheng3D/Rendering/Context.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
+#include "Wrapper/ShaderModule.hpp"
+#include "Rendering/Context.hpp"
+#include "Wrapper/Device.hpp"
 #include "cstring"
 #include <cstdint>
 #include <fstream>

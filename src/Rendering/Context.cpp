@@ -1,27 +1,27 @@
-#include "MoCheng3D/Rendering/Context.hpp"
-#include "MoCheng3D/Helper/DescriptorManager.hpp"
-#include "MoCheng3D/Rendering/GLFW_Window.hpp"
-#include "MoCheng3D/Rendering/Model.hpp"
-#include "MoCheng3D/Rendering/Render_Context.hpp"
-#include "MoCheng3D/Rendering/Render_Frame.hpp"
-#include "MoCheng3D/Wrapper/Buffer.hpp"
-#include "MoCheng3D/Wrapper/CommandBuffer.hpp"
-#include "MoCheng3D/Wrapper/CommandPool.hpp"
-#include "MoCheng3D/Wrapper/DescriptorPool.hpp"
-#include "MoCheng3D/Wrapper/DescriptorSet.hpp"
-#include "MoCheng3D/Wrapper/Fence.hpp"
-#include "MoCheng3D/Wrapper/FrameBuffer.hpp"
-#include "MoCheng3D/Wrapper/Image.hpp"
-#include "MoCheng3D/Wrapper/Instance.hpp"
-#include "MoCheng3D/Wrapper/Pipeline.hpp"
-#include "MoCheng3D/Wrapper/RenderPass.hpp"
-#include "MoCheng3D/Wrapper/Sampler.hpp"
-#include "MoCheng3D/Wrapper/Semaphore.hpp"
-#include "MoCheng3D/Wrapper/ShaderModule.hpp"
-#include "MoCheng3D/Wrapper/SwapChain.hpp"
-#include "MoCheng3D/Wrapper/Uniform.hpp"
+#include "Rendering/Context.hpp"
+#include "Helper/DescriptorManager.hpp"
+#include "Rendering/GLFW_Window.hpp"
+#include "Rendering/Model.hpp"
+#include "Rendering/Render_Context.hpp"
+#include "Rendering/Render_Frame.hpp"
+#include "Wrapper/Buffer.hpp"
+#include "Wrapper/CommandBuffer.hpp"
+#include "Wrapper/CommandPool.hpp"
+#include "Wrapper/DescriptorPool.hpp"
+#include "Wrapper/DescriptorSet.hpp"
+#include "Wrapper/Fence.hpp"
+#include "Wrapper/FrameBuffer.hpp"
+#include "Wrapper/Image.hpp"
+#include "Wrapper/Instance.hpp"
+#include "Wrapper/Pipeline.hpp"
+#include "Wrapper/RenderPass.hpp"
+#include "Wrapper/Sampler.hpp"
+#include "Wrapper/Semaphore.hpp"
+#include "Wrapper/ShaderModule.hpp"
+#include "Wrapper/SwapChain.hpp"
+#include "Wrapper/Uniform.hpp"
 
-#include "MoCheng3D/Wrapper/Window_Surface.hpp"
+#include "Wrapper/Window_Surface.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_vulkan.h"
@@ -29,14 +29,13 @@
 #include <limits>
 #include <memory>
 
-#include "MoCheng3D/Helper/Camera.hpp"
-#include "MoCheng3D/Rendering/Texture.hpp"
+#include "Helper/Camera.hpp"
+#include "Rendering/Texture.hpp"
 
 namespace MoCheng3D {
 
 const std::array<Uniform, 1> color_data { { 0, 0, 1 } };
 
- 
 void Context::Quit()
 {
 

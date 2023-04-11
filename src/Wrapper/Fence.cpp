@@ -1,5 +1,5 @@
-#include "MoCheng3D/Wrapper/Fence.hpp"
-#include "MoCheng3D/Wrapper/Device.hpp"
+#include "Wrapper/Fence.hpp"
+#include "Wrapper/Device.hpp"
 
 namespace MoCheng3D {
 Fence::Fence()

@@ -1,4 +1,4 @@
-#include "MoCheng3D/Helper/Camera.hpp"
+#include "Helper/Camera.hpp"
 
 namespace MoCheng3D {
 

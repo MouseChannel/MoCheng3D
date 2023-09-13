@@ -19,5 +19,11 @@ int main(int, char**)
     //   while (true) {
     //     glfwPollEvents();
     //   }
+
+    
+    std::cout << "Hello, world!\n";
+
+    std::cout << "Hello, world!\n";
+
     std::cout << "Hello, world!\n";
 }
